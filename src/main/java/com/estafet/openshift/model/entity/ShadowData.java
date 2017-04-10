@@ -1,15 +1,20 @@
 package com.estafet.openshift.model.entity;
 
+import com.estafet.openshift.model.exception.EmptyArgumentException;
+import com.estafet.openshift.model.exception.ResourceNotFoundException;
 import org.apache.log4j.Logger;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.Calendar;
 
 import static com.estafet.openshift.config.Constants.*;
+import static com.estafet.openshift.config.Queries.SQL_GET_SHADOW_DATA;
+import static com.estafet.openshift.config.Queries.SQL_INSERT_SHADOW_DATA;
+import static com.estafet.openshift.config.Queries.SQL_UPDATE_SHADOW_DATA;
 
 /**
  * Created by Delcho Delov on 04.04.17.
@@ -83,39 +88,39 @@ public class ShadowData {
 								'}';
 		}
 
-//		public void loadState(Connection conn) throws ResourceNotFoundException, SQLException, EmptyArgumentException {
-//				if (conn == null || conn.isClosed()) {
-//						throw new EmptyArgumentException("connection");
-//				}
-//				final PreparedStatement preparedStatement = conn.prepareStatement(SQL_GET_SHADOW_DATA);
-//				preparedStatement.setString(1, thingName);
-//				final ResultSet resultSet = preparedStatement.executeQuery();
-//				if (resultSet.next()) {
-//						this.tstamp = resultSet.getTimestamp(1);
-//						this.reported = resultSet.getString(2);
-//						this.desired = resultSet.getString(3);
-//				} else {
-//						throw new ResourceNotFoundException("Device data not found");
-//				}
-//		}
-//
-//		public void writeToDb(Connection conn) throws SQLException, EmptyArgumentException {
-//				if (conn == null || conn.isClosed()) {
-//						throw new EmptyArgumentException("connection");
-//				}
-//
-//				PreparedStatement ps = conn.prepareStatement(SQL_UPDATE_SHADOW_DATA);
-//				try {
-//						loadState(conn);
-//				} catch (ResourceNotFoundException noProblem) {
-//						log.debug("data not found - insert as a new record");
-//						ps = conn.prepareStatement(SQL_INSERT_SHADOW_DATA);
-//				}
-//				ps.setString(1, reported);
-//				ps.setString(2, desired);
-//				ps.setString(3, thingName);
-//
-//				final int i = ps.executeUpdate();
-//				log.debug("Affected rows: " + i);
-//		}
+		public void loadState(Connection conn) throws ResourceNotFoundException, SQLException, EmptyArgumentException {
+				if (conn == null || conn.isClosed()) {
+						throw new EmptyArgumentException("connection");
+				}
+				final PreparedStatement preparedStatement = conn.prepareStatement(SQL_GET_SHADOW_DATA);
+				preparedStatement.setString(1, thingName);
+				final ResultSet resultSet = preparedStatement.executeQuery();
+				if (resultSet.next()) {
+						this.tstamp = resultSet.getTimestamp(1);
+						this.reported = resultSet.getString(2);
+						this.desired = resultSet.getString(3);
+				} else {
+						throw new ResourceNotFoundException("Device data not found");
+				}
+		}
+
+		public void writeToDb(Connection conn) throws SQLException, EmptyArgumentException {
+				if (conn == null || conn.isClosed()) {
+						throw new EmptyArgumentException("connection");
+				}
+
+				PreparedStatement ps = conn.prepareStatement(SQL_UPDATE_SHADOW_DATA);
+				try {
+						loadState(conn);
+				} catch (ResourceNotFoundException noProblem) {
+						log.debug("data not found - insert as a new record");
+						ps = conn.prepareStatement(SQL_INSERT_SHADOW_DATA);
+				}
+				ps.setString(1, reported);
+				ps.setString(2, desired);
+				ps.setString(3, thingName);
+
+				final int i = ps.executeUpdate();
+				log.debug("Affected rows: " + i);
+		}
 }

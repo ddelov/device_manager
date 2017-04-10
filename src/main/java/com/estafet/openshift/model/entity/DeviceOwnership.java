@@ -1,8 +1,12 @@
 package com.estafet.openshift.model.entity;
 
+import com.estafet.openshift.model.exception.DMException;
+import com.estafet.openshift.model.exception.EmptyArgumentException;
 import org.apache.log4j.Logger;
 
 import javax.persistence.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -113,78 +117,78 @@ public class DeviceOwnership {
 		 *
 		 * @return true if record is loaded from DB, false-no such record
 		 */
-//		public boolean loadLastActive(Connection conn) throws DMException, SQLException {
-//				if (conn == null || conn.isClosed()) {
-//						throw new EmptyArgumentException("connection");
-//				}
-//
-////				Calendar today = Calendar.getInstance();
-////				today.set(Calendar.HOUR_OF_DAY, 0);
-////				today.set(Calendar.MINUTE, 0);
-////				today.set(Calendar.SECOND, 0);
-////				today.set(Calendar.MILLISECOND, 0);
-////				final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
-////				sdf.setTimeZone(today.getTimeZone());
-////
-////				Map<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
-////				eav.put(":today", new AttributeValue().withS(String.valueOf(sdf.format(today.getTime()))));
-////				eav.put(":deviceId", new AttributeValue().withS(getThingName()));
-////
-////				StringBuilder sb = new StringBuilder();
-////				sb.append("( ( ").append("attribute_not_exists(").append(COL_VALID_TO).append(") AND ").append(COL_VALID_FROM).append(" <= :today").append(" ) ");
-////				sb.append(" OR ");
-////				sb.append(" ( attribute_exists(").append(COL_VALID_TO).append(") AND ").append(COL_VALID_TO).append(" > :today").append(" ) )");
-////				sb.append(" AND ").append(COL_THING_NAME).append(" = :deviceId");
-////				DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
-////								.withFilterExpression(sb.toString())
-////								.withExpressionAttributeValues(eav);
-////				final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()/*.withCredentials(new AWSStaticCredentialsProvider(awsCredentials))*/.build();
-////				DynamoDBMapper mapper = new DynamoDBMapper(client);//getDynamoDBMapper();
-//				List<DeviceOwnership> records = getScanResults();
-//				if(records==null || records.isEmpty()){
-//						return false;
-//				}
-//				// expected 1 record
-//				if(records.size()>1){
-//						throw new DMException("More than 1 active record found for device "+ getThingName());
-//				}
-//				//===============
-//				final DeviceOwnership deo = records.get(0);
-//				setValidFrom(deo.getValidFrom());
-//				setThingTypeName(deo.thingTypeName);
-//				setId(deo.getId());
-//				setValidTo(deo.getValidTo());
-//				setCustomerId(deo.getCustomerId());
-//				setOwn(deo.isOwn());
-//				setSn(deo.getSn());
-//				return true;
-//		}
+		public boolean loadLastActive(Connection conn) throws DMException, SQLException {
+				if (conn == null || conn.isClosed()) {
+						throw new EmptyArgumentException("connection");
+				}
 
-//		public void writeToDb(Connection conn) throws DMException, SQLException {
-//				if (conn == null || conn.isClosed()) {
-//						throw new EmptyArgumentException("connection");
-//				}
+//				Calendar today = Calendar.getInstance();
+//				today.set(Calendar.HOUR_OF_DAY, 0);
+//				today.set(Calendar.MINUTE, 0);
+//				today.set(Calendar.SECOND, 0);
+//				today.set(Calendar.MILLISECOND, 0);
+//				final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+//				sdf.setTimeZone(today.getTimeZone());
 //
-//				//TODO write Postgres implementation
-////				Table table = getDynamoDBTable();// only for test purposes
-////				try {
-////						final Item item = new Item()
-////										.withPrimaryKey(COL_ID, getId()!=null?getId():UUID.randomUUID().toString()) // Every item gets a unique id
-////										.withString(COL_CUST_ID, getCustomerId())
-////										.withString(COL_THING_NAME, getThingName())
-////										.withString(COL_THING_TYPE, getThingTypeName())
-////										.withString(COL_SN, getSn())
-////										.withString(COL_VALID_FROM, getValidFrom())
-////										.withBoolean(COL_OWN, isOwn());
-////						if(!Utils.isEmpty(getValidTo())) {
-////								item.withString(COL_VALID_TO, getValidTo());
-////						}
-////						table.putItem(item);
-////				}catch (Exception e){
-////						log.error("Could not store "+ TABLE_NAME_DEVICE_OWNERSHIP + " record in the DB", e);
-////						throw new CentricaException("Could not store "+ TABLE_NAME_DEVICE_OWNERSHIP + " record in the DB", e);
-////				}
-//		}
+//				Map<String, AttributeValue> eav = new HashMap<String, AttributeValue>();
+//				eav.put(":today", new AttributeValue().withS(String.valueOf(sdf.format(today.getTime()))));
+//				eav.put(":deviceId", new AttributeValue().withS(getThingName()));
+//
+//				StringBuilder sb = new StringBuilder();
+//				sb.append("( ( ").append("attribute_not_exists(").append(COL_VALID_TO).append(") AND ").append(COL_VALID_FROM).append(" <= :today").append(" ) ");
+//				sb.append(" OR ");
+//				sb.append(" ( attribute_exists(").append(COL_VALID_TO).append(") AND ").append(COL_VALID_TO).append(" > :today").append(" ) )");
+//				sb.append(" AND ").append(COL_THING_NAME).append(" = :deviceId");
+//				DynamoDBScanExpression scanExpression = new DynamoDBScanExpression()
+//								.withFilterExpression(sb.toString())
+//								.withExpressionAttributeValues(eav);
+//				final AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()/*.withCredentials(new AWSStaticCredentialsProvider(awsCredentials))*/.build();
+//				DynamoDBMapper mapper = new DynamoDBMapper(client);//getDynamoDBMapper();
+				List<DeviceOwnership> records = getScanResults();
+				if(records==null || records.isEmpty()){
+						return false;
+				}
+				// expected 1 record
+				if(records.size()>1){
+						throw new DMException("More than 1 active record found for device "+ getThingName());
+				}
+				//===============
+				final DeviceOwnership deo = records.get(0);
+				setValidFrom(deo.getValidFrom());
+				setThingTypeName(deo.thingTypeName);
+				setId(deo.getId());
+				setValidTo(deo.getValidTo());
+				setCustomerId(deo.getCustomerId());
+				setOwn(deo.isOwn());
+				setSn(deo.getSn());
+				return true;
+		}
+
+		public void writeToDb(Connection conn) throws DMException, SQLException {
+				if (conn == null || conn.isClosed()) {
+						throw new EmptyArgumentException("connection");
+				}
+
+				//TODO write Postgres implementation
+//				Table table = getDynamoDBTable();// only for test purposes
+//				try {
+//						final Item item = new Item()
+//										.withPrimaryKey(COL_ID, getId()!=null?getId():UUID.randomUUID().toString()) // Every item gets a unique id
+//										.withString(COL_CUST_ID, getCustomerId())
+//										.withString(COL_THING_NAME, getThingName())
+//										.withString(COL_THING_TYPE, getThingTypeName())
+//										.withString(COL_SN, getSn())
+//										.withString(COL_VALID_FROM, getValidFrom())
+//										.withBoolean(COL_OWN, isOwn());
+//						if(!Utils.isEmpty(getValidTo())) {
+//								item.withString(COL_VALID_TO, getValidTo());
+//						}
+//						table.putItem(item);
+//				}catch (Exception e){
+//						log.error("Could not store "+ TABLE_NAME_DEVICE_OWNERSHIP + " record in the DB", e);
+//						throw new CentricaException("Could not store "+ TABLE_NAME_DEVICE_OWNERSHIP + " record in the DB", e);
+//				}
+		}
 		protected List<DeviceOwnership> getScanResults() {
 				//TODO write Postgres implementation
 				return null;
