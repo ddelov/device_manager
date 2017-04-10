@@ -1,4 +1,4 @@
-package org.blogger.rest.resources;
+package com.estafet.openshift.rest;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

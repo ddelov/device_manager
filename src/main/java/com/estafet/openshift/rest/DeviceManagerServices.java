@@ -1,11 +1,21 @@
-package org.blogger.rest.resources;
+package com.estafet.openshift.rest;
 
+import com.estafet.openshift.model.entity.ShadowData;
+import com.estafet.openshift.util.ConnectionProvider;
 import org.apache.log4j.Logger;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
 
+import static com.estafet.openshift.config.Queries.SQL_GET_SHADOW_DATA;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
@@ -23,6 +33,36 @@ public class DeviceManagerServices {
 		@Produces(APPLICATION_JSON)
 		public String hello() {
 				return "Welcome to OpenShift, Mr. Delov!";
+		}
+
+		@GET
+		@Path("/getShadowData")
+		@Produces(APPLICATION_JSON)
+		@Consumes(APPLICATION_JSON)
+		public Response getShadowData()
+		{
+				log.info("Calling UserServices.getShadowData() method");
+				ShadowData shadowData = null;
+				try (Connection conn = ConnectionProvider.getCon()) {
+						PreparedStatement ps = conn.prepareStatement(SQL_GET_SHADOW_DATA);
+						final String thingName = "DUMMY_DEV";
+						ps.setString(1, thingName);
+						final ResultSet resultSet = ps.executeQuery();
+						if (resultSet.next()) {
+								final Timestamp timestamp = resultSet.getTimestamp(1);
+								final String reported = resultSet.getString(2);
+								final String desired = resultSet.getString(3);
+								shadowData = new ShadowData(thingName, reported, desired);
+								shadowData.setTstamp(timestamp);
+						}
+						log.debug(shadowData);
+				} catch (Exception e) {
+						log.error(e.getMessage(), e);
+						return Response.status(HttpServletResponse.SC_BAD_REQUEST).build();
+				}
+				log.info("Exit UserServices.getShadowData() method");
+				// return HTTP response 200 in case of success
+				return Response.status(HttpServletResponse.SC_OK).entity(shadowData).build();
 		}
 
 
