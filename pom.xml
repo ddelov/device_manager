@@ -42,6 +42,7 @@
                 </plugins>
             </build>
         </profile>
+
         <profile>
             <id>openshift</id>
             <build>
