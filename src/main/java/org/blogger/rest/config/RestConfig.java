@@ -1,4 +1,4 @@
-package com.estafet.openshift.rest.config;
+package org.blogger.rest.config;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
