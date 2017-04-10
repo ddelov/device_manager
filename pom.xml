@@ -7,7 +7,7 @@
     <artifactId>blogger</artifactId>
     <packaging>war</packaging>
     <version>1.0</version>
-    <name>device_manager</name>
+    <name>blogger</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,7 +28,7 @@
         <profile>
             <id>local</id>
             <build>
-                <finalName>device_manager</finalName>
+                <finalName>blogger</finalName>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -45,7 +45,7 @@
         <profile>
             <id>openshift</id>
             <build>
-                <finalName>device_manager</finalName>
+                <finalName>blogger</finalName>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>

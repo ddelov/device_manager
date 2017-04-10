@@ -1,4 +1,4 @@
-package com.estafet.openshift.rest;
+package com.estafet.openshift.rest.resources;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

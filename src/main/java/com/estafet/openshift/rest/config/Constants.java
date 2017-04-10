@@ -1,4 +1,4 @@
-package com.estafet.openshift.config;
+package com.estafet.openshift.rest.config;
 
 //import com.estafet.openshift.model.enumerations.DeviceStatus;
 
