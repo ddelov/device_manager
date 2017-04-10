@@ -63,7 +63,7 @@ public class DeviceManagerServices {
 								shadowData = new ShadowData(thingName, reported, desired);
 								shadowData.setTstamp(timestamp);
 						}
-						log.debug(shadowData);
+						log.info(shadowData);
 				} catch (Exception e) {
 						log.error(e.getMessage(), e);
 						return Response.status(HttpServletResponse.SC_BAD_REQUEST).build();
@@ -87,12 +87,12 @@ public class DeviceManagerServices {
 						if (body == null || body.isEmpty()) {
 								throw new EmptyArgumentException("Missing request body");
 						}
-
+						log.info("body: "+body);
 						if (!body.containsKey(COL_CUST_ID)) {
 								log.error(COL_CUST_ID + " parameter is mandatory");
 								throw new EmptyArgumentException(COL_CUST_ID + " parameter is mandatory");
 						}
-						final int customerId = (int) body.get(COL_CUST_ID);
+						final Double customerId = (Double) body.get(COL_CUST_ID);
 
 						final String thingName = (String) body.get(COL_THING_NAME);
 						if (isEmpty(thingName)) {
@@ -120,7 +120,7 @@ public class DeviceManagerServices {
 								throw new EmptyArgumentException(COL_VALID_FROM + " parameter is mandatory");
 						}
 						//2.
-						final DeviceOwnership deviceOwnership = new DeviceOwnership(customerId, thingName, thingType, sn, own);
+						final DeviceOwnership deviceOwnership = new DeviceOwnership(customerId.intValue(), thingName, thingType, sn, own);
 						deviceOwnership.setValidFrom(validFrom);
 						registerDevice(deviceOwnership);
 				} catch (DMException e) {
