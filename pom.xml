@@ -3,11 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>blogger</groupId>
-	<artifactId>blogger</artifactId>
+	<groupId>com.estafet.openshift</groupId>
+	<artifactId>device_manager</artifactId>
 	<packaging>war</packaging>
 	<version>1.0</version>
-	<name>blogger</name>
+	<name>device_manager</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,13 +22,28 @@
 			<version>7.0</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.4.1212</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.0</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>
 		<profile>
 			<id>local</id>
 			<build>
-				<finalName>blogger</finalName>
+				<finalName>device_manager</finalName>
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
@@ -45,7 +60,7 @@
 		<profile>
 			<id>openshift</id>
 			<build>
-				<finalName>blogger</finalName>
+				<finalName>device_manager</finalName>
 				<plugins>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
