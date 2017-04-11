@@ -4,6 +4,7 @@ import com.estafet.openshift.model.BaseDeviceManager;
 import com.estafet.openshift.model.DeviceManager;
 import com.estafet.openshift.model.entity.Customer;
 import com.estafet.openshift.model.exception.DMException;
+import com.estafet.openshift.model.exception.DMSQLException;
 import com.estafet.openshift.model.exception.EmptyArgumentException;
 import com.estafet.openshift.model.exception.ResourceNotFoundException;
 import com.estafet.openshift.util.ConnectionProvider;
@@ -43,7 +44,10 @@ public class UserServices {
 						log.info("<< UserServices.loadByUsername()");
 						// return HTTP response 200 in case of success
 						return Response.status(HttpServletResponse.SC_OK).entity(customer).build();
-
+				} catch (ResourceNotFoundException e) {
+						log.warn(e.getMessage());
+						log.info("<< UserServices.loadByUsername()");
+						return Response.status(HttpServletResponse.SC_OK).entity(e.getMessage()).build();
 				} catch (DMException e) {
 						log.error(e.getMessage(), e);
 						log.info("<< UserServices.loadByUsername()");
@@ -72,7 +76,7 @@ public class UserServices {
 				// return HTTP response 200 in case of success
 				return Response.status(HttpServletResponse.SC_OK).entity(customer).build();
 		}
-		private Customer loadByUsername(String username) throws DMException{
+		private Customer loadByUsername(String username) throws DMSQLException, EmptyArgumentException, ResourceNotFoundException {
 				if(Utils.isEmpty(username)){
 						throw new EmptyArgumentException("username");
 				}
@@ -82,7 +86,7 @@ public class UserServices {
 								throw new ResourceNotFoundException("Could not find any data for customer with username "+username);
 						}
 				} catch (SQLException e) {
-						throw new DMException("Problem with DB", e);
+						throw new DMSQLException("Problem with DB", e);
 				}
 				return customer;
 		}
