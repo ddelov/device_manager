@@ -15,7 +15,6 @@ public class LeakData {
 		@Column(name = COL_ID, nullable = false)
 		private int id;
 
-
 		@Column(name = COL_THING_NAME, nullable = false)
 		private String thingName;
 		@Column(name = COL_LEAK_DETECTED, nullable = false)

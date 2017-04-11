@@ -6,13 +6,14 @@ import javax.ws.rs.Produces;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-@Path("/device")
+@Path("/")
 public class HelloResource {
 
-	@GET
-	@Produces(APPLICATION_JSON)
-	public String ping(){
+		@GET
+		@Path("/")
+		@Produces(APPLICATION_JSON)
+		public String hello() {
+				return "Welcome to OpenShift, Mr. Delov!";
+		}
 
-			return "Hello World!";
-	}
 }

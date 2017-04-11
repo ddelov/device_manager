@@ -3,12 +3,15 @@ package com.estafet.openshift.rest;
 import com.estafet.openshift.model.BaseDeviceManager;
 import com.estafet.openshift.model.DeviceManager;
 import com.estafet.openshift.model.device.AbstractDevice;
+import com.estafet.openshift.model.entity.Customer;
 import com.estafet.openshift.model.entity.DeviceOwnership;
 import com.estafet.openshift.model.entity.ShadowData;
 import com.estafet.openshift.model.exception.DMException;
 import com.estafet.openshift.model.exception.EmptyArgumentException;
+import com.estafet.openshift.model.exception.ResourceNotFoundException;
 import com.estafet.openshift.util.ConnectionProvider;
 import com.estafet.openshift.util.ReportedState;
+import com.estafet.openshift.util.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
@@ -17,54 +20,68 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Map;
 
 import static com.estafet.openshift.config.Constants.*;
-import static com.estafet.openshift.config.Queries.SQL_GET_SHADOW_DATA;
 import static javax.faces.component.UIInput.isEmpty;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
  * Created by Delcho Delov on 06.04.17.
  */
-@Path("/device")
-public class DeviceManagerServices {
-		private Logger log = Logger.getLogger(DeviceManagerServices.class);
+@Path("/user")
+public class UserServices {
+		private Logger log = Logger.getLogger(UserServices.class);
 		private final DeviceManager deviceManager = new BaseDeviceManager();
 
 
 		@GET
-		@Path("/getShadowData")
+		@Path("/byUsername")
 		@Produces(APPLICATION_JSON)
 		@Consumes(APPLICATION_JSON)
-		public Response getShadowData()
+		public Response searchByUsername(String jsonPayload)
 		{
-				log.info("Calling DeviceManagerServices.getShadowData() method");
-				ShadowData shadowData = null;
-				try (Connection conn = ConnectionProvider.getCon()) {
-						PreparedStatement ps = conn.prepareStatement(SQL_GET_SHADOW_DATA);
-						final String thingName = "DUMMY_DEV";
-						ps.setString(1, thingName);
-						final ResultSet resultSet = ps.executeQuery();
-						if (resultSet.next()) {
-								final Timestamp timestamp = resultSet.getTimestamp(1);
-								final String reported = resultSet.getString(2);
-								final String desired = resultSet.getString(3);
-								shadowData = new ShadowData(thingName, reported, desired);
-								shadowData.setTstamp(timestamp);
+				log.info(">> UserServices.loadByUsername()");
+				Gson gson = new GsonBuilder().create();
+				try {
+						//1. extract input parameters
+						final Map<String, Object> body = gson.fromJson(jsonPayload, Map.class);
+						if (body == null || body.isEmpty()) {
+								throw new EmptyArgumentException("Missing request body");
 						}
-						log.info(shadowData);
-				} catch (Exception e) {
-						log.error(e.getMessage(), e);
-						return Response.status(HttpServletResponse.SC_BAD_REQUEST).build();
-				}
-				log.info("Exit DeviceManagerServices.getShadowData() method");
-				// return HTTP response 200 in case of success
-				return Response.status(HttpServletResponse.SC_OK).entity(shadowData).build();
-		}
+						log.info("body: "+body);
+						if (!body.containsKey(COL_USERNAME)) {
+								log.error(COL_USERNAME + " parameter is mandatory");
+								throw new EmptyArgumentException(COL_USERNAME + " parameter is mandatory");
+						}
+						final String username = (String) body.get(COL_USERNAME);
+						final Customer customer = loadByUsername(username);
+						log.info("<< UserServices.loadByUsername()");
+						// return HTTP response 200 in case of success
+						return Response.status(HttpServletResponse.SC_OK).entity(customer).build();
 
+				} catch (DMException e) {
+						log.error(e.getMessage(), e);
+						return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity(e.getMessage()).build();
+				}
+		}
+		private Customer loadByUsername(String username) throws DMException{
+				if(Utils.isEmpty(username)){
+						throw new EmptyArgumentException("username");
+				}
+				Customer customer = new Customer(username);
+				try (Connection conn = ConnectionProvider.getCon()) {
+						if(!customer.loadByUsername(conn)){
+								throw new ResourceNotFoundException("Could not find any data for customer with username "+username);
+						}
+				} catch (SQLException e) {
+						throw new DMException("Problem with DB", e);
+				}
+				return customer;
+		}
 
 		@POST
 		@Path("/add")
