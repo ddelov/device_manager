@@ -76,6 +76,7 @@ public class UserServices {
 				// return HTTP response 200 in case of success
 				return Response.status(HttpServletResponse.SC_OK).entity(customer).build();
 		}
+
 		private Customer loadByUsername(String username) throws DMSQLException, EmptyArgumentException, ResourceNotFoundException {
 				if(Utils.isEmpty(username)){
 						throw new EmptyArgumentException("username");
