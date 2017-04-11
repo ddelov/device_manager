@@ -161,7 +161,6 @@ public class UserServices {
 										copy.writeToDb(conn);
 								}
 								String thingTypeName = deviceOwnership.getThingTypeName();
-//				listThingTypesRequest.setThingTypeName(thingTypeName);
 								AbstractDevice device = deviceManager.createInstance(deviceOwnership.getThingName(), thingTypeName, deviceOwnership.getSn());
 								ReportedState reportedState = new ReportedState(device.getCurrentState());
 								final Gson json = new Gson();
