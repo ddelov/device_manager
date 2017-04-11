@@ -38,14 +38,12 @@ public class DeviceManagerServices {
 		@GET
 		@Path("/getShadowData")
 		@Produces(APPLICATION_JSON)
-		@Consumes(APPLICATION_JSON)
-		public Response getShadowData()
+		public Response getShadowData(@QueryParam(COL_THING_NAME)String thingName)
 		{
 				log.info("Calling DeviceManagerServices.getShadowData() method");
 				ShadowData shadowData = null;
 				try (Connection conn = ConnectionProvider.getCon()) {
 						PreparedStatement ps = conn.prepareStatement(SQL_GET_SHADOW_DATA);
-						final String thingName = "DUMMY_DEV";
 						ps.setString(1, thingName);
 						final ResultSet resultSet = ps.executeQuery();
 						if (resultSet.next()) {
