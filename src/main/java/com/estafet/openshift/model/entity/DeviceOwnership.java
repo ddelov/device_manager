@@ -33,7 +33,7 @@ public class DeviceOwnership {
 		@Column(name = COL_CUST_ID,nullable = false)
 //		@ManyToOne
 //		private Customer userId;// FK to Users
-		private int customerId;// FK to Users
+		private String customerId;// customer email for the moment
 
 		@Column(name = COL_THING_NAME,nullable = false)
 		private String thingName; //thingName
@@ -45,13 +45,13 @@ public class DeviceOwnership {
 		private boolean own;
 		@Column(name = COL_VALID_FROM,nullable = false)
 		private String validFrom; // date in format 'yyyyMMdd'
-		@Column(name = COL_VALID_TO,nullable = true)
+		@Column(name = COL_VALID_TO)
 		private String validTo; // date in format 'yyyyMMdd'
 
 		public DeviceOwnership() {//for JSON purposes
 		}
 
-		public DeviceOwnership(int customerId, String thingName, String thingTypeName, String sn, boolean own) {
+		public DeviceOwnership(String customerId, String thingName, String thingTypeName, String sn, boolean own) {
 				this.customerId = customerId;
 				this.thingName = thingName;
 				this.thingTypeName = thingTypeName;
@@ -71,7 +71,7 @@ public class DeviceOwnership {
 				this.id = id;
 		}
 
-		public int getCustomerId() {
+		public String getCustomerId() {
 				return customerId;
 		}
 
@@ -143,8 +143,7 @@ public class DeviceOwnership {
 				if (resultSet.next()) {
 						final Double dblId = resultSet.getDouble(1);
 						this.id = dblId.intValue();
-						final Double custId = resultSet.getDouble(2);
-						this.customerId = custId.intValue();
+						this.customerId = resultSet.getString(2);
 						this.thingName = resultSet.getString(3);
 						this.thingTypeName = resultSet.getString(4);
 						this.sn = resultSet.getString(5);
@@ -170,7 +169,7 @@ public class DeviceOwnership {
 				log.info(">>DeviceOwnership.writeToDb()");
 
 				PreparedStatement ps = conn.prepareStatement(SQL_INSERT_DEV_OWNERSHIP);
-				ps.setInt(1, customerId);
+				ps.setString(1, customerId);
 				ps.setString(2, thingTypeName);
 				ps.setString(3, sn);
 				ps.setBoolean(4, own);
@@ -183,7 +182,7 @@ public class DeviceOwnership {
 				log.info("<<DeviceOwnership.writeToDb()");
 		}
 
-		public void setCustomerId(int customerId) {
+		public void setCustomerId(String customerId) {
 				this.customerId = customerId;
 		}
 

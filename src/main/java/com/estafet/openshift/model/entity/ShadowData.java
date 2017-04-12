@@ -21,6 +21,7 @@ import static com.estafet.openshift.config.Queries.SQL_UPDATE_SHADOW_DATA;
  */
 @Entity
 @Table(name = TABLE_NAME_SHADOW_DATA, schema = SCHEMA_NAME)
+@Deprecated
 public class ShadowData {
 		private static Logger log = Logger.getLogger(ShadowData.class);
 		@Id

@@ -14,8 +14,10 @@ import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -27,6 +29,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
  * Created by Delcho Delov on 06.04.17.
  */
 @Path("/user")
+@Deprecated
 public class UserServices {
 		private Logger log = Logger.getLogger(UserServices.class);
 		private final DeviceManager deviceManager = new BaseDeviceManager();
@@ -53,28 +56,6 @@ public class UserServices {
 						log.info("<< UserServices.loadByUsername()");
 						return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity(e.getMessage()).build();
 				}
-		}
-
-		@POST
-		@Path("/add")
-		@Consumes(MediaType.APPLICATION_JSON)
-		@Produces(MediaType.APPLICATION_JSON)
-		public Response add(String jsonPayload) {
-				log.info(">> UserServices.add()");
-				Gson gson = new GsonBuilder().create();
-//				try {
-						final Customer customer = gson.fromJson(jsonPayload, Customer.class);
-						log.info("input data "+customer);
-						//TODO
-//				} catch (DMException e) {
-//						log.error(e.getMessage(), e);
-//						log.info("<< UserServices.add()");
-//						return Response.status(HttpServletResponse.SC_BAD_REQUEST).build();
-//				}
-
-				log.info("<< UserServices.add()");
-				// return HTTP response 200 in case of success
-				return Response.status(HttpServletResponse.SC_OK).entity(customer).build();
 		}
 
 		private Customer loadByUsername(String username) throws DMSQLException, EmptyArgumentException, ResourceNotFoundException {

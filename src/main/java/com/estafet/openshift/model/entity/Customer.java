@@ -19,6 +19,7 @@ import static com.estafet.openshift.config.Queries.SQL_LOAD_CUSTOMER;
  */
 @Entity
 @Table(name= TABLE_NAME_CUSTOMER, schema=SCHEMA_NAME)
+@Deprecated
 public class Customer {
 		private static Logger log = Logger.getLogger(Customer.class);
 		@Id

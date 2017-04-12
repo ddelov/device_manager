@@ -9,6 +9,7 @@ import static com.estafet.openshift.config.Constants.*;
  */
 @Entity
 @Table(name= TABLE_NAME_LEAKS_DATA, schema=SCHEMA_NAME)
+@Deprecated
 public class LeakData {
 		@Id
 		@GeneratedValue
