@@ -189,9 +189,6 @@ public class DeviceManagerServices {
 		@Path("/registerDevice")
 		@Consumes(MediaType.APPLICATION_JSON)
 		@Produces(MediaType.APPLICATION_JSON)
-		/**
-		 * Executes in a transaction
-		 */
 		public Response registerDevice(String jsonPayload) {
 				log.debug(">> DeviceManagerServices.registerDevice()");
 				Gson gson = new GsonBuilder().create();
@@ -293,6 +290,7 @@ public class DeviceManagerServices {
 								final String validTo = resultSet.getString(7);
 								final String customerIdRead = resultSet.getString(8);
 								final DeviceOwnership deviceOwnership = new DeviceOwnership(id, customerIdRead, thingName, thingTypeName, sn, own, validFrom, validTo);
+								log.debug("Found info for "+deviceOwnership);
 								final Map<String, Object> propertiesMap = deviceOwnership.asMap();
 								//TODO get real device status from registry
 								propertiesMap.put("deviceStatus", "OF");
