@@ -38,10 +38,22 @@ public interface Queries {
 		String SQL_MARK_DEV_OWNERSHIP_INVALID = "update "+SCHEMA_NAME + '.' + TABLE_NAME_DEVICE_OWNERSHIP +
 						" set "+ COL_VALID_TO+" = ? where "+ COL_ID + " = ?";
 		String SQL_GET_ALL_DEV_OWNERSHIP = "select " + COL_ID +", "+ COL_THING_NAME +","+ COL_THING_TYPE +","+COL_SN +","+COL_OWN +","+COL_VALID_FROM+","+COL_VALID_TO+","+COL_CUST_ID+
-						" from "+SCHEMA_NAME + '.' + TABLE_NAME_DEVICE_OWNERSHIP;
+						" from "+SCHEMA_NAME + '.' + TABLE_NAME_DEVICE_OWNERSHIP+
+						" where ("+
+								//all next parameters are today(formatted)
+								" ("+COL_VALID_FROM +" <= ? and "+ COL_VALID_TO + " is NULL )"+
+								" or ("+ COL_VALID_TO+" >= ? )"+
+						" )"
+
+						;
 		String SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER = "select "+ COL_ID +", " + COL_THING_NAME +","+ COL_THING_TYPE +","+COL_SN +","+COL_OWN +","+COL_VALID_FROM+","+COL_VALID_TO+","+COL_CUST_ID+
 						" from "+SCHEMA_NAME + '.' + TABLE_NAME_DEVICE_OWNERSHIP+
-						" where "+COL_CUST_ID+" like ?";
+						" where ("+
+								//all next parameters are today(formatted)
+								" ("+COL_VALID_FROM +" <= ? and "+ COL_VALID_TO + " is NULL )"+
+								" or ("+ COL_VALID_TO+" >= ? )"+
+						" ) and "+ COL_CUST_ID+" like ?"
+						;
 
 		String SQL_GET_SHADOW_DATA = "select "+ COL_TSTAMP+","+ COL_REPORTED +","+COL_DESIRED+
 						" from "+SCHEMA_NAME + '.' + TABLE_NAME_SHADOW_DATA+" where "+COL_THING_NAME + " LIKE ?";

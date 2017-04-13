@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -274,13 +275,25 @@ public class DeviceManagerServices {
 				final List<Map<String, Object>> devices = new LinkedList<>();
 				final PersistenceProvider dao = new PersistenceProvider();
 				String sql = SQL_GET_ALL_DEV_OWNERSHIP;
+				Calendar today = Calendar.getInstance();
+				today.set(Calendar.HOUR_OF_DAY, 0);
+				today.set(Calendar.MINUTE, 0);
+				today.set(Calendar.SECOND, 0);
+				today.set(Calendar.MILLISECOND, 0);
+				final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+				sdf.setTimeZone(today.getTimeZone());
+				final String now = sdf.format(today.getTime());
+
 				try (Connection conn = dao.getCon()) {
 						PreparedStatement ps = conn.prepareStatement(SQL_GET_ALL_DEV_OWNERSHIP);
+						ps.setString(1, now);
+						ps.setString(2, now);
 						if (!Utils.isEmpty(customerId)) {
 								ps = conn.prepareStatement(SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER);
-								ps.setString(1, customerId);
+								ps.setString(3, customerId);
 								sql = SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER;
 						}
+
 						log.debug(sql);
 						final ResultSet resultSet = ps.executeQuery();
 						while (resultSet.next()) {
