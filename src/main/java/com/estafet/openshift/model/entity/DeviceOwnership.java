@@ -1,22 +1,14 @@
 package com.estafet.openshift.model.entity;
 
-import com.estafet.openshift.model.exception.DMException;
-import com.estafet.openshift.model.exception.EmptyArgumentException;
 import org.apache.log4j.Logger;
 
 import javax.persistence.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.estafet.openshift.config.Constants.*;
-import static com.estafet.openshift.config.Queries.SQL_INSERT_DEV_OWNERSHIP;
-import static com.estafet.openshift.config.Queries.SQL_LOAD_LAST_ACTIVE_OWNERSHIP;
 
 /**
  * Created by Delcho Delov on 9.3.2017 г..
@@ -31,12 +23,10 @@ public class DeviceOwnership {
 		private int id;
 
 		@Column(name = COL_CUST_ID,nullable = false)
-//		@ManyToOne
-//		private Customer userId;// FK to Users
 		private String customerId;// customer email for the moment
 
 		@Column(name = COL_THING_NAME,nullable = false)
-		private String thingName; //thingName
+		private String thingName;
 		@Column(name = COL_THING_TYPE,nullable = false)
 		private String thingTypeName;
 		@Column(name = COL_SN,nullable = false)
@@ -51,16 +41,33 @@ public class DeviceOwnership {
 		public DeviceOwnership() {//for JSON purposes
 		}
 
-		public DeviceOwnership(String customerId, String thingName, String thingTypeName, String sn, boolean own) {
+		/**
+		 * Constructs a new object from scratch - suitable for DB insert operation
+		 * @param customerId
+		 * @param thingName
+		 * @param thingTypeName
+		 * @param sn
+		 * @param own
+		 * @param validFrom
+		 */
+		public DeviceOwnership(String customerId, String thingName, String thingTypeName, String sn, boolean own, String validFrom) {
+				this.id = id;
 				this.customerId = customerId;
 				this.thingName = thingName;
 				this.thingTypeName = thingTypeName;
 				this.sn = sn;
 				this.own = own;
+				this.validFrom = validFrom;
+				this.validTo = validTo;
 		}
-
-		public DeviceOwnership(String thingName) {
-				this.thingName = thingName;
+		/**
+		 * Constructor suitable for DB loaded record
+		 *
+		 */
+		public DeviceOwnership(int id, String customerId, String thingName, String thingTypeName, String sn, boolean own, String validFrom, String validTo) {
+				this(customerId, thingName, thingTypeName, sn, own, validFrom);
+				this.id = id;
+				this.validTo = validTo;
 		}
 
 		public int getId() {
@@ -114,77 +121,6 @@ public class DeviceOwnership {
 				return sn;
 		}
 
-		/**
-		 * Search last active record fi device ONLY BY THING ID. If no such record exists returns false. If DR returns
-		 * more than 1 record, this is indication to error
-		 *
-		 * @return true if record is loaded from DB, false-no such record
-		 */
-		public boolean loadLastActive(Connection conn) throws SQLException, EmptyArgumentException {
-				if (conn == null || conn.isClosed()) {
-						throw new EmptyArgumentException("connection");
-				}
-				log.info(">>DeviceOwnership.loadLastActive()");
-				Calendar today = Calendar.getInstance();
-				today.set(Calendar.HOUR_OF_DAY, 0);
-				today.set(Calendar.MINUTE, 0);
-				today.set(Calendar.SECOND, 0);
-				today.set(Calendar.MILLISECOND, 0);
-				final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
-				sdf.setTimeZone(today.getTimeZone());
-				final String now = sdf.format(today.getTime());
-
-				final PreparedStatement preparedStatement = conn.prepareStatement(SQL_LOAD_LAST_ACTIVE_OWNERSHIP);
-				preparedStatement.setString(1, thingName);
-				preparedStatement.setString(2, now);
-				preparedStatement.setString(3, now);
-				final ResultSet resultSet = preparedStatement.executeQuery();
-				boolean res = false;
-				if (resultSet.next()) {
-						final Double dblId = resultSet.getDouble(1);
-						this.id = dblId.intValue();
-						this.customerId = resultSet.getString(2);
-						this.thingName = resultSet.getString(3);
-						this.thingTypeName = resultSet.getString(4);
-						this.sn = resultSet.getString(5);
-						this.own = resultSet.getBoolean(6);
-						this.validFrom = resultSet.getString(7);
-						this.validTo = resultSet.getString(8);
-						res = true;
-						log.debug("Found " + this);
-				}else{
-						log.debug("Device " + thingName + " not found");
-				}
-				log.info("<<DeviceOwnership.loadLastActive()");
-				return res;
-		}
-
-		/**
-		 * Should be wrapped in transaction
-		 * @param conn
-		 * @throws DMException
-		 * @throws SQLException
-		 */
-		public void writeToDb(Connection conn) throws DMException, SQLException {
-				if (conn == null || conn.isClosed()) {
-						throw new EmptyArgumentException("connection");
-				}
-				log.info(">>DeviceOwnership.writeToDb()");
-
-				PreparedStatement ps = conn.prepareStatement(SQL_INSERT_DEV_OWNERSHIP);
-				ps.setString(1, customerId);
-				ps.setString(2, thingTypeName);
-				ps.setString(3, sn);
-				ps.setBoolean(4, own);
-				ps.setString(5, validFrom);
-				ps.setString(6, validTo);
-				ps.setString(7, thingName);
-
-				final int i = ps.executeUpdate();
-				log.info("Affected rows: " + i);
-				log.info("<<DeviceOwnership.writeToDb()");
-		}
-
 		public void setCustomerId(String customerId) {
 				this.customerId = customerId;
 		}
@@ -226,4 +162,17 @@ public class DeviceOwnership {
 				return res;
 		}
 
+		@Override
+		public String toString() {
+				return "DeviceOwnership{" +
+								"id=" + id +
+								", customerId='" + customerId + '\'' +
+								", thingName='" + thingName + '\'' +
+								", thingTypeName='" + thingTypeName + '\'' +
+								", sn='" + sn + '\'' +
+								", own=" + own +
+								", validFrom='" + validFrom + '\'' +
+								", validTo='" + validTo + '\'' +
+								'}';
+		}
 }

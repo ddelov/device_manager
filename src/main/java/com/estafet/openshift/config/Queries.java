@@ -23,8 +23,8 @@ public interface Queries {
 						" from " + SCHEMA_NAME + '.' + TABLE_NAME_CUSTOMER +
 						" where " + COL_USERNAME + " like ?";
 
-		String SQL_LOAD_LAST_ACTIVE_OWNERSHIP = "select " + COL_ID +"," + COL_CUST_ID +","+COL_THING_NAME+","
-						+ COL_THING_TYPE +","+COL_SN +","+COL_OWN +","+COL_VALID_FROM +","+COL_VALID_TO+
+		String SQL_LOAD_LAST_ACTIVE_OWNERSHIP = "select " + COL_ID +"," + COL_CUST_ID +"," +
+						COL_THING_TYPE +","+COL_SN +","+COL_OWN +","+COL_VALID_FROM +","+COL_VALID_TO+
 						" from "+SCHEMA_NAME + '.' + TABLE_NAME_DEVICE_OWNERSHIP+
 						" where "+COL_THING_NAME+" like ? and ("+
 							//all next parameters are today(formatted)
@@ -38,9 +38,9 @@ public interface Queries {
 		String SQL_UPDATE_DEV_OWNERSHIP = "update "+SCHEMA_NAME + '.' + TABLE_NAME_DEVICE_OWNERSHIP +
 						" set "+ COL_CUST_ID+" = ?, "+COL_THING_TYPE + " = ?, "+COL_SN+" = ?, "+COL_OWN+" = ?, "+COL_VALID_FROM+" = ?, "+COL_VALID_TO+" = ? where "+
 						COL_THING_NAME + " = ?";
-		String SQL_GET_ALL_DEV_OWNERSHIP = "select " + COL_THING_NAME +","+ COL_THING_TYPE +","+COL_SN +","+COL_OWN +","+COL_VALID_FROM+","+COL_VALID_TO+","+COL_CUST_ID+
+		String SQL_GET_ALL_DEV_OWNERSHIP = "select " + COL_ID +", "+ COL_THING_NAME +","+ COL_THING_TYPE +","+COL_SN +","+COL_OWN +","+COL_VALID_FROM+","+COL_VALID_TO+","+COL_CUST_ID+
 						" from "+SCHEMA_NAME + '.' + TABLE_NAME_DEVICE_OWNERSHIP;
-		String SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER = "select " + COL_THING_NAME +","+ COL_THING_TYPE +","+COL_SN +","+COL_OWN +","+COL_VALID_FROM+","+COL_VALID_TO+","+COL_CUST_ID+
+		String SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER = "select "+ COL_ID +", " + COL_THING_NAME +","+ COL_THING_TYPE +","+COL_SN +","+COL_OWN +","+COL_VALID_FROM+","+COL_VALID_TO+","+COL_CUST_ID+
 						" from "+SCHEMA_NAME + '.' + TABLE_NAME_DEVICE_OWNERSHIP+
 						" where "+COL_CUST_ID+" like ?";
 

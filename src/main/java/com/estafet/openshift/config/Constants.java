@@ -1,6 +1,5 @@
 package com.estafet.openshift.config;
 
-import com.estafet.openshift.model.enumerations.DeviceStatus;
 
 /**
  * Created by Delcho Delov on 04.04.17.
@@ -31,8 +30,6 @@ public interface Constants {
 		String COL_THING_NAME = "thing_name";
 		String COL_REPORTED = "reported";
 		String COL_DESIRED = "desired";
-		String COL_LEAK_DETECTED = "leak_detected";
-		String COL_PRESSURE = "pressure";
 		String COL_CUST_ID = "cust_id";
 		String COL_VALID_FROM = "valid_from";
 		String COL_VALID_TO = "valid_to";
@@ -40,19 +37,8 @@ public interface Constants {
 		String COL_THING_TYPE = "thing_type";
 		String COL_SN = "sn";
 
-		// device types
-		String TYPE_NAME_LEAKDETECTOR = "LeakDetector";
-		String TYPE_NAME_CAMERA = "Camera";
-
-		//device related
-		String DEVICE_ID = "device_id";
-		DeviceStatus DEVICE_STATUS_DEFAULT = DeviceStatus.OFF;
-		boolean LEAK_DEFAULT = false;
-		float PRESSURE_DEFAULT = 0;
-
 		// service related
 		int CLIENT_EXECUTION_TIMEOUT = 20000;
-		String POLICY_NAME = "iotAll";
 
 		// HTTP & parameters
 		String HEADERS = "headers";
