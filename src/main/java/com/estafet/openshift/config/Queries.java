@@ -29,7 +29,7 @@ public interface Queries {
 						" where "+COL_THING_NAME+" like ? and ("+
 							//all next parameters are today(formatted)
 							" ("+COL_VALID_FROM +" <= ? and "+ COL_VALID_TO + " is NULL )"+
-							" or ("+ COL_VALID_TO+" >= ? )"+
+							" or ("+ COL_VALID_TO+" > ? )"+
 						")";
 
 		String SQL_INSERT_DEV_OWNERSHIP = "insert into " + SCHEMA_NAME + '.' + TABLE_NAME_DEVICE_OWNERSHIP +
@@ -42,7 +42,7 @@ public interface Queries {
 						" where ("+
 								//all next parameters are today(formatted)
 								" ("+COL_VALID_FROM +" <= ? and "+ COL_VALID_TO + " is NULL )"+
-								" or ("+ COL_VALID_TO+" >= ? )"+
+								" or ("+ COL_VALID_TO+" > ? )"+
 						" )"
 
 						;
@@ -51,7 +51,7 @@ public interface Queries {
 						" where ("+
 								//all next parameters are today(formatted)
 								" ("+COL_VALID_FROM +" <= ? and "+ COL_VALID_TO + " is NULL )"+
-								" or ("+ COL_VALID_TO+" >= ? )"+
+								" or ("+ COL_VALID_TO+" > ? )"+
 						" ) and "+ COL_CUST_ID+" like ?"
 						;
 

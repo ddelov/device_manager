@@ -120,7 +120,7 @@ public class DeviceManagerServices {
 				}
 				log.debug("<< DeviceManagerServices.deleteDevice()");
 				// return HTTP response 200 in case of success
-				return Response.status(HttpServletResponse.SC_OK).build();
+				return Response.status(HttpServletResponse.SC_OK).entity("Device deleted").build();
 		}
 
 
