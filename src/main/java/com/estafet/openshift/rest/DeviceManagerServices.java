@@ -83,7 +83,7 @@ public class DeviceManagerServices {
 
 
 		@DELETE
-		@Path("/deleteDevice/{thingName}")
+		@Path("/deleteDevice/{thing_name}")
 		@Produces(MediaType.APPLICATION_JSON)
 		public Response deleteDevice(@PathParam(HDR_THING_NAME) String thingName) {
 				log.debug(">> DeviceManagerServices.deleteDevice()");
