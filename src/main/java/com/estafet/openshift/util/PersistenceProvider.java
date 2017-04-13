@@ -18,6 +18,7 @@ import java.util.Calendar;
 import static com.estafet.openshift.config.Constants.DATE_PATTERN;
 import static com.estafet.openshift.config.Queries.SQL_INSERT_DEV_OWNERSHIP;
 import static com.estafet.openshift.config.Queries.SQL_LOAD_LAST_ACTIVE_OWNERSHIP;
+import static com.estafet.openshift.config.Queries.SQL_MARK_DEV_OWNERSHIP_INVALID;
 import static com.estafet.openshift.util.Utils.isEmpty;
 
 public class PersistenceProvider {
@@ -129,4 +130,20 @@ public class PersistenceProvider {
 		}
 
 
+		public void markDeviceOwnershipInvalid(DeviceOwnership deviceOwnership, Connection conn) throws SQLException, EmptyArgumentException {
+				log.info(">> markDeviceOwnershipInvalid()");
+				if (conn == null || conn.isClosed()) {
+						throw new EmptyArgumentException("connection is mandatory parameter");
+				}
+				final int id = deviceOwnership.getId();
+				final String validTo = deviceOwnership.getValidTo();
+
+				PreparedStatement ps = conn.prepareStatement(SQL_MARK_DEV_OWNERSHIP_INVALID);
+				ps.setString(1, validTo);
+				ps.setInt(2, id);
+
+				final int i = ps.executeUpdate();
+				log.info("Affected rows: " + i);
+				log.info("<< markDeviceOwnershipInvalid()");
+		}
 }

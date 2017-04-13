@@ -102,12 +102,12 @@ public class DeviceManagerServices {
 				try (Connection conn = dao.getCon()) {
 						try {
 								//1. search device current record in DeviceOwnership and mark as invalid
-								final DeviceOwnership deviceOwnership = dao.loadDeviceOwnership(thingName, conn);
-								deviceOwnership.setValidTo(Calendar.getInstance()); // effective immediately - today device is no longer active
-								dao.writeDeviceOwnership(deviceOwnership, conn);
+								final DeviceOwnership loadDeviceOwnership = dao.loadDeviceOwnership(thingName, conn);
+								loadDeviceOwnership.setValidTo(Calendar.getInstance()); // effective immediately - today device is no longer active
+								dao.markDeviceOwnershipInvalid(loadDeviceOwnership, conn);
 								conn.commit();
 						} catch (ResourceNotFoundException e) {
-								log.info(e.getMessage(), e);
+								log.info(e.getMessage());
 								return Response.status(HttpServletResponse.SC_OK).entity(e.getMessage()).build();
 						} catch (DMException e) {
 								log.error(e.getMessage(), e);
@@ -245,7 +245,7 @@ public class DeviceManagerServices {
 								try {
 										final DeviceOwnership loadDeviceOwnership = dao.loadDeviceOwnership(thingName, conn);
 										loadDeviceOwnership.setValidTo(Calendar.getInstance()); // effective immediately - today device is no longer active
-										dao.writeDeviceOwnership(loadDeviceOwnership, conn);
+										dao.markDeviceOwnershipInvalid(loadDeviceOwnership, conn);
 								} catch (ResourceNotFoundException e) {
 										// not a problem - continue
 								}

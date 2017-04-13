@@ -35,9 +35,8 @@ public interface Queries {
 		String SQL_INSERT_DEV_OWNERSHIP = "insert into " + SCHEMA_NAME + '.' + TABLE_NAME_DEVICE_OWNERSHIP +
 						" ("+ COL_CUST_ID +","+ COL_THING_TYPE +","+COL_SN +","+COL_OWN +","+COL_VALID_FROM+","+COL_VALID_TO+","+COL_THING_NAME+
 						" ) values (?,?,?,?,?,?,?)";
-		String SQL_UPDATE_DEV_OWNERSHIP = "update "+SCHEMA_NAME + '.' + TABLE_NAME_DEVICE_OWNERSHIP +
-						" set "+ COL_CUST_ID+" = ?, "+COL_THING_TYPE + " = ?, "+COL_SN+" = ?, "+COL_OWN+" = ?, "+COL_VALID_FROM+" = ?, "+COL_VALID_TO+" = ? where "+
-						COL_THING_NAME + " = ?";
+		String SQL_MARK_DEV_OWNERSHIP_INVALID = "update "+SCHEMA_NAME + '.' + TABLE_NAME_DEVICE_OWNERSHIP +
+						" set "+ COL_VALID_TO+" = ? where "+ COL_ID + " = ?";
 		String SQL_GET_ALL_DEV_OWNERSHIP = "select " + COL_ID +", "+ COL_THING_NAME +","+ COL_THING_TYPE +","+COL_SN +","+COL_OWN +","+COL_VALID_FROM+","+COL_VALID_TO+","+COL_CUST_ID+
 						" from "+SCHEMA_NAME + '.' + TABLE_NAME_DEVICE_OWNERSHIP;
 		String SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER = "select "+ COL_ID +", " + COL_THING_NAME +","+ COL_THING_TYPE +","+COL_SN +","+COL_OWN +","+COL_VALID_FROM+","+COL_VALID_TO+","+COL_CUST_ID+
