@@ -105,15 +105,20 @@ public class DeviceManagerServices {
 				}
 				//invalidate device ownership record
 				try (Connection conn = ConnectionProvider.getCon()) {
+						boolean deviceFound = false;
 						try {
 								//1. search device current record in DeviceOwnership and mark as invalid
 								final DeviceOwnership deviceOwnership = new DeviceOwnership(thingName);
-								if (deviceOwnership.loadLastActive(conn)) {
+								deviceFound = deviceOwnership.loadLastActive(conn);
+								if (deviceFound) {
 										deviceOwnership.setValidTo(Calendar.getInstance()); // effective immediately - today device is no longer active
 										deviceOwnership.writeToDb(conn);
+										conn.commit();
 								}
-								conn.commit();
 						} catch (DMException e) {
+								if(deviceFound){
+										conn.rollback();
+								}
 								log.error(e.getMessage(), e);
 								return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity(e.getMessage()).build();
 						}
@@ -249,7 +254,7 @@ public class DeviceManagerServices {
 
 				log.info("Exit DeviceManager.addNewDevice() method");
 				// return HTTP response 200 in case of success
-				return Response.status(HttpServletResponse.SC_OK).entity("Customer inserted").build();
+				return Response.status(HttpServletResponse.SC_OK).entity("Device registered").build();
 		}
 
 		/**

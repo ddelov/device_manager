@@ -151,6 +151,9 @@ public class DeviceOwnership {
 						this.validFrom = resultSet.getString(7);
 						this.validTo = resultSet.getString(8);
 						res = true;
+						log.debug("Found " + this);
+				}else{
+						log.debug("Device " + thingName + " not found");
 				}
 				log.info("<<DeviceOwnership.loadLastActive()");
 				return res;
