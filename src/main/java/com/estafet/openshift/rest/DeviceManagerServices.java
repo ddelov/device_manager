@@ -273,14 +273,17 @@ public class DeviceManagerServices {
 		private List<Map<String, Object>> listMyDevices(String customerId) throws DMException {
 				final List<Map<String, Object>> devices = new LinkedList<>();
 				final PersistenceProvider dao = new PersistenceProvider();
+				String sql = SQL_GET_ALL_DEV_OWNERSHIP;
 				try (Connection conn = dao.getCon()) {
 						PreparedStatement ps = conn.prepareStatement(SQL_GET_ALL_DEV_OWNERSHIP);
 						if (!Utils.isEmpty(customerId)) {
 								ps = conn.prepareStatement(SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER);
 								ps.setString(1, customerId);
+								sql = SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER;
 						}
+						log.debug(sql);
 						final ResultSet resultSet = ps.executeQuery();
-						if (resultSet.next()) {
+						while (resultSet.next()) {
 								final int id = Double.valueOf(resultSet.getDouble(1)).intValue();
 								final String thingName = resultSet.getString(2);
 								final String thingTypeName = resultSet.getString(3);
