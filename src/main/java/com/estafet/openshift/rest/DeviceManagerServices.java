@@ -5,7 +5,6 @@ import com.estafet.openshift.model.exception.DMException;
 import com.estafet.openshift.model.exception.EmptyArgumentException;
 import com.estafet.openshift.model.exception.ResourceNotFoundException;
 import com.estafet.openshift.util.PersistenceProvider;
-import com.estafet.openshift.util.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
@@ -27,15 +26,16 @@ import java.util.Map;
 import static com.estafet.openshift.config.Constants.*;
 import static com.estafet.openshift.config.Queries.SQL_GET_ALL_DEV_OWNERSHIP;
 import static com.estafet.openshift.config.Queries.SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER;
-import static javax.faces.component.UIInput.isEmpty;
+import static com.estafet.openshift.util.Utils.isEmpty;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
  * Created by Delcho Delov on 06.04.17.
+ *
  */
 @Path("/")
 public class DeviceManagerServices {
-		private Logger log = Logger.getLogger(DeviceManagerServices.class);
+		private final Logger log = Logger.getLogger(DeviceManagerServices.class);
 
 		@GET
 		@Path("/")
@@ -53,11 +53,11 @@ public class DeviceManagerServices {
 				log.debug(">> DeviceManagerServices.getAllDevices()");
 				//check parameters
 				try {
-						if (Utils.isEmpty(role)) {
+						if (isEmpty(role)) {
 								log.error(ROLE + " parameter is mandatory");
 								throw new EmptyArgumentException(ROLE + " parameter is mandatory");
 						}
-						if (Utils.isEmpty(customerId) && !ROLE_MANAGER.equalsIgnoreCase(role)) {
+						if (isEmpty(customerId) && !ROLE_MANAGER.equalsIgnoreCase(role)) {
 								log.error("As you have not MANAGER permissions granted, so you should specify your customer ID");
 								throw new EmptyArgumentException("As you have not MANAGER permissions granted, so you should specify your customer ID");
 						}
@@ -90,7 +90,7 @@ public class DeviceManagerServices {
 				log.debug(">> DeviceManagerServices.deleteDevice()");
 				//check parameters
 				try {
-						if (Utils.isEmpty(thingName)) {
+						if (isEmpty(thingName)) {
 								log.error(HDR_THING_NAME + " parameter is mandatory");
 								throw new EmptyArgumentException(HDR_THING_NAME + " parameter is mandatory");
 						}
@@ -99,7 +99,7 @@ public class DeviceManagerServices {
 						return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity(e.getMessage()).build();
 				}
 				//invalidate device ownership record
-				final PersistenceProvider dao = new PersistenceProvider();
+				final PersistenceProvider dao = getPersistenceProvider();
 				try (Connection conn = dao.getCon()) {
 						try {
 								//1. search device current record in DeviceOwnership and mark as invalid
@@ -121,6 +121,10 @@ public class DeviceManagerServices {
 				log.debug("<< DeviceManagerServices.deleteDevice()");
 				// return HTTP response 200 in case of success
 				return Response.status(HttpServletResponse.SC_OK).entity("Device deleted").build();
+		}
+
+		PersistenceProvider getPersistenceProvider() {
+				return new PersistenceProvider();
 		}
 
 
@@ -200,16 +204,11 @@ public class DeviceManagerServices {
 								throw new EmptyArgumentException("Missing request body");
 						}
 						log.info("body: " + body);
-						if (!body.containsKey(COL_CUST_ID)) {
+						final String customerId = (String) body.get(COL_CUST_ID);
+						if (isEmpty(customerId)) {
 								log.error(COL_CUST_ID + " parameter is mandatory");
 								throw new EmptyArgumentException(COL_CUST_ID + " parameter is mandatory");
 						}
-						final String customerId = (String) body.get(COL_CUST_ID);
-						if (isEmpty(customerId)) {
-								log.error(COL_THING_NAME + " parameter is mandatory");
-								throw new EmptyArgumentException(COL_THING_NAME + " parameter is mandatory");
-						}
-
 						final String thingName = (String) body.get(COL_THING_NAME);
 						if (isEmpty(thingName)) {
 								log.error(COL_THING_NAME + " parameter is mandatory");
@@ -237,7 +236,7 @@ public class DeviceManagerServices {
 								throw new EmptyArgumentException(COL_VALID_FROM + " parameter is mandatory");
 						}
 						//2.processing
-						final PersistenceProvider dao = new PersistenceProvider();
+						final PersistenceProvider dao = getPersistenceProvider();
 						try (Connection conn = dao.getCon()) {
 								// 1. search device current record (if any) in DeviceOwnership and mark as invalid
 								try {
@@ -252,7 +251,7 @@ public class DeviceManagerServices {
 								try {
 										dao.writeDeviceOwnership(actualRecord, conn);
 										conn.commit();
-								} catch (DMException e) {
+								} catch (EmptyArgumentException e) {
 										conn.rollback();
 										log.error(e.getMessage(), e);
 										return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity(e.getMessage()).build();
@@ -263,7 +262,7 @@ public class DeviceManagerServices {
 						}
 				} catch (DMException e) {
 						log.error(e.getMessage(), e);
-						return Response.status(HttpServletResponse.SC_BAD_REQUEST).build();
+						return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity(e.getMessage()).build();
 				}
 
 				log.info("Exit DeviceManager.addNewDevice() method");
@@ -273,7 +272,7 @@ public class DeviceManagerServices {
 
 		private List<Map<String, Object>> listMyDevices(String customerId) throws DMException {
 				final List<Map<String, Object>> devices = new LinkedList<>();
-				final PersistenceProvider dao = new PersistenceProvider();
+				final PersistenceProvider dao = getPersistenceProvider();
 				String sql = SQL_GET_ALL_DEV_OWNERSHIP;
 				Calendar today = Calendar.getInstance();
 				today.set(Calendar.HOUR_OF_DAY, 0);
@@ -288,7 +287,7 @@ public class DeviceManagerServices {
 						PreparedStatement ps = conn.prepareStatement(SQL_GET_ALL_DEV_OWNERSHIP);
 						ps.setString(1, now);
 						ps.setString(2, now);
-						if (!Utils.isEmpty(customerId)) {
+						if (!isEmpty(customerId)) {
 								ps = conn.prepareStatement(SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER);
 								ps.setString(3, customerId);
 								sql = SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER;
@@ -306,7 +305,7 @@ public class DeviceManagerServices {
 								final String validTo = resultSet.getString(7);
 								final String customerIdRead = resultSet.getString(8);
 								final DeviceOwnership deviceOwnership = new DeviceOwnership(id, customerIdRead, thingName, thingTypeName, sn, own, validFrom, validTo);
-								log.debug("Found info for "+deviceOwnership);
+								log.debug("Found info for " + deviceOwnership);
 								final Map<String, Object> propertiesMap = deviceOwnership.asMap();
 								//TODO get real device status from registry
 								propertiesMap.put("deviceStatus", "OF");

@@ -1,12 +1,7 @@
 package com.estafet.openshift.util;
 
-/**
- * Created by Delcho Delov on 04.04.17.
- */
-
 import com.estafet.openshift.config.Constants;
 import com.estafet.openshift.model.entity.DeviceOwnership;
-import com.estafet.openshift.model.exception.DMException;
 import com.estafet.openshift.model.exception.EmptyArgumentException;
 import com.estafet.openshift.model.exception.ResourceNotFoundException;
 import org.apache.log4j.Logger;
@@ -16,37 +11,42 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import static com.estafet.openshift.config.Constants.DATE_PATTERN;
-import static com.estafet.openshift.config.Queries.SQL_INSERT_DEV_OWNERSHIP;
-import static com.estafet.openshift.config.Queries.SQL_LOAD_LAST_ACTIVE_OWNERSHIP;
-import static com.estafet.openshift.config.Queries.SQL_MARK_DEV_OWNERSHIP_INVALID;
+import static com.estafet.openshift.config.Constants.INVALID_ID;
+import static com.estafet.openshift.config.Queries.*;
 import static com.estafet.openshift.util.Utils.isEmpty;
 
+/**
+ * Created by Delcho Delov on 04.04.17.
+ *
+ */
 public class PersistenceProvider {
-		private Connection con=null;
+		private Connection con = null;
 		private static final Logger log = Logger.getLogger(PersistenceProvider.class);
-		static{
-				try{
+
+		static {
+				try {
 						log.debug("PersistenceProvider static initializer");
 						Class.forName(Constants.DRIVER);
-						log.info("============ DB Connection URL: "+ Constants.CONNECTION_URL);
-				}catch(Exception e){
+						log.debug("============ DB Connection URL: " + Constants.CONNECTION_URL);
+				} catch (Exception e) {
 						log.error(e.getMessage(), e);
 				}
 		}
 
-		public Connection getCon(){
-				try {
-						if(con==null || con.isClosed()){
-								con=DriverManager.getConnection(Constants.CONNECTION_URL, Constants.USERNAME, Constants.PASSWORD);
-								log.debug("Connection established");
-								con.setAutoCommit(false);
-						}
-				} catch (SQLException e) {
-						log.error(e.getMessage(), e);
+		public Connection getCon() throws SQLException {
+				if (con == null || con.isClosed()) {
+						// try to open a new one
+						con = DriverManager.getConnection(Constants.CONNECTION_URL, Constants.USERNAME, Constants.PASSWORD);
+						log.debug("Connection established");
+						con.setAutoCommit(false);
+				}
+				if (con == null || con.isClosed()) {
+						throw new SQLException("Could not open DB connection");
 				}
 				log.debug("returns connection: " + con);
 				return con;
 		}
+
 		/**
 		 * Search last active record fi device ONLY BY THING ID. If no such record exists returns false. If DR returns
 		 * more than 1 record, this is indication to error
@@ -55,7 +55,7 @@ public class PersistenceProvider {
 		 */
 		public DeviceOwnership loadDeviceOwnership(String thingName, Connection conn) throws SQLException, EmptyArgumentException, ResourceNotFoundException {
 				log.debug(">> loadDeviceOwnership()");
-				if(isEmpty(thingName)){
+				if (isEmpty(thingName)) {
 						throw new EmptyArgumentException("Parameter thingName is mandatory");
 				}
 				if (conn == null || conn.isClosed()) {
@@ -87,7 +87,7 @@ public class PersistenceProvider {
 						final DeviceOwnership deviceOwnership = new DeviceOwnership(id, customerId, thingName, thingTypeName, sn, own, validFrom, validTo);
 						log.debug("Found " + deviceOwnership);
 						return deviceOwnership;
-				}else{
+				} else {
 						log.debug("Device " + thingName + " not found");
 						throw new ResourceNotFoundException("Device " + thingName + " not found");
 				}
@@ -95,12 +95,12 @@ public class PersistenceProvider {
 
 		/**
 		 * Should be wrapped in transaction
+		 *
 		 * @param conn
-		 * @throws DMException
 		 * @throws SQLException
 		 */
-		public void writeDeviceOwnership(DeviceOwnership deviceOwnership, Connection conn) throws DMException, SQLException {
-				log.info(">> writeDeviceOwnership()");
+		public void writeDeviceOwnership(DeviceOwnership deviceOwnership, Connection conn) throws SQLException, EmptyArgumentException {
+				log.debug(">> writeDeviceOwnership()");
 				if (conn == null || conn.isClosed()) {
 						throw new EmptyArgumentException("connection is mandatory parameter");
 				}
@@ -109,7 +109,7 @@ public class PersistenceProvider {
 				final String typeName = deviceOwnership.getThingTypeName();
 				final String sn = deviceOwnership.getSn();
 				final String validFrom = deviceOwnership.getValidFrom();
-				if(isEmpty(customerId)||isEmpty(thingName)||isEmpty(typeName)||isEmpty(sn)||isEmpty(validFrom)){
+				if (isEmpty(customerId) || isEmpty(thingName) || isEmpty(typeName) || isEmpty(sn) || isEmpty(validFrom)) {
 						throw new EmptyArgumentException("DeviceOwnership instance is not complete");
 				}
 				final boolean own = deviceOwnership.isOwn();
@@ -125,25 +125,29 @@ public class PersistenceProvider {
 				ps.setString(7, thingName);
 
 				final int i = ps.executeUpdate();
-				log.info("Affected rows: " + i);
-				log.info("<<DeviceOwnership.writeToDb()");
+				log.debug("Affected rows: " + i);
+				log.debug("<<DeviceOwnership.writeToDb()");
 		}
 
 
 		public void markDeviceOwnershipInvalid(DeviceOwnership deviceOwnership, Connection conn) throws SQLException, EmptyArgumentException {
-				log.info(">> markDeviceOwnershipInvalid()");
-				if (conn == null || conn.isClosed()) {
-						throw new EmptyArgumentException("connection is mandatory parameter");
+				log.debug(">> markDeviceOwnershipInvalid()");
+				if (conn == null || conn.isClosed() ||
+								deviceOwnership == null || deviceOwnership.getId() == INVALID_ID) {
+						throw new EmptyArgumentException("All parameters are mandatory");
 				}
 				final int id = deviceOwnership.getId();
 				final String validTo = deviceOwnership.getValidTo();
+				if (isEmpty(validTo)) {
+						deviceOwnership.setValidTo(Calendar.getInstance()); // effective immediately - today device is no longer active
+				}
 
 				PreparedStatement ps = conn.prepareStatement(SQL_MARK_DEV_OWNERSHIP_INVALID);
 				ps.setString(1, validTo);
 				ps.setInt(2, id);
 
 				final int i = ps.executeUpdate();
-				log.info("Affected rows: " + i);
-				log.info("<< markDeviceOwnershipInvalid()");
+				log.debug("Affected rows: " + i);
+				log.debug("<< markDeviceOwnershipInvalid()");
 		}
 }
