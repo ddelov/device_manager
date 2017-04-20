@@ -1,8 +1,8 @@
-package com.estafet.openshift.util;
+package com.estafet.openshift.dm.util;
 
-import com.estafet.openshift.model.entity.DeviceOwnership;
-import com.estafet.openshift.model.exception.EmptyArgumentException;
-import com.estafet.openshift.model.exception.ResourceNotFoundException;
+import com.estafet.openshift.dm.model.entity.DeviceOwnership;
+import com.estafet.openshift.dm.model.exception.EmptyArgumentException;
+import com.estafet.openshift.dm.model.exception.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import static com.estafet.openshift.config.TestConstants.*;
+import static com.estafet.openshift.dm.config.TestConstants.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;

@@ -1,4 +1,4 @@
-package com.estafet.openshift.util;
+package com.estafet.openshift.dm.util;
 
 import org.junit.Test;
 

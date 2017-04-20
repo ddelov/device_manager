@@ -1,10 +1,10 @@
-package com.estafet.openshift.rest;
+package com.estafet.openshift.dm.rest;
 
-import com.estafet.openshift.model.entity.DeviceOwnership;
-import com.estafet.openshift.model.exception.DMException;
-import com.estafet.openshift.model.exception.EmptyArgumentException;
-import com.estafet.openshift.model.exception.ResourceNotFoundException;
-import com.estafet.openshift.util.PersistenceProvider;
+import com.estafet.openshift.dm.model.exception.DMException;
+import com.estafet.openshift.dm.model.entity.DeviceOwnership;
+import com.estafet.openshift.dm.model.exception.EmptyArgumentException;
+import com.estafet.openshift.dm.model.exception.ResourceNotFoundException;
+import com.estafet.openshift.dm.util.PersistenceProvider;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
@@ -23,10 +23,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static com.estafet.openshift.config.Constants.*;
-import static com.estafet.openshift.config.Queries.SQL_GET_ALL_DEV_OWNERSHIP;
-import static com.estafet.openshift.config.Queries.SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER;
-import static com.estafet.openshift.util.Utils.isEmpty;
+import static com.estafet.openshift.dm.config.Constants.*;
+import static com.estafet.openshift.dm.config.Queries.SQL_GET_ALL_DEV_OWNERSHIP;
+import static com.estafet.openshift.dm.config.Queries.SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER;
+import static com.estafet.openshift.dm.util.Utils.isEmpty;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**

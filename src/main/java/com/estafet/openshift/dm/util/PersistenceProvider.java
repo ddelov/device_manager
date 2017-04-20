@@ -1,19 +1,19 @@
-package com.estafet.openshift.util;
+package com.estafet.openshift.dm.util;
 
-import com.estafet.openshift.config.Constants;
-import com.estafet.openshift.model.entity.DeviceOwnership;
-import com.estafet.openshift.model.exception.EmptyArgumentException;
-import com.estafet.openshift.model.exception.ResourceNotFoundException;
+import com.estafet.openshift.dm.config.Constants;
+import com.estafet.openshift.dm.model.entity.DeviceOwnership;
+import com.estafet.openshift.dm.model.exception.EmptyArgumentException;
+import com.estafet.openshift.dm.model.exception.ResourceNotFoundException;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import static com.estafet.openshift.config.Constants.DATE_PATTERN;
-import static com.estafet.openshift.config.Constants.INVALID_ID;
-import static com.estafet.openshift.config.Queries.*;
-import static com.estafet.openshift.util.Utils.isEmpty;
+import static com.estafet.openshift.dm.config.Constants.DATE_PATTERN;
+import static com.estafet.openshift.dm.config.Constants.INVALID_ID;
+import static com.estafet.openshift.dm.config.Queries.*;
+import static com.estafet.openshift.dm.util.Utils.isEmpty;
 
 /**
  * Created by Delcho Delov on 04.04.17.

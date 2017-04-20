@@ -1,4 +1,4 @@
-package com.estafet.openshift.model.entity;
+package com.estafet.openshift.dm.model.entity;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
@@ -6,7 +6,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.estafet.openshift.config.Constants.*;
+import static com.estafet.openshift.dm.config.Constants.*;
 
 /**
  * Created by Delcho Delov on 9.3.2017 г..

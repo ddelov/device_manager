@@ -1,4 +1,4 @@
-package com.estafet.openshift.model.exception;
+package com.estafet.openshift.dm.model.exception;
 
 /**
  * Created by Delcho Delov on 12.1.2017 г..

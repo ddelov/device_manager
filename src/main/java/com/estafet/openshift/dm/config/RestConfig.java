@@ -1,4 +1,4 @@
-package com.estafet.openshift.config;
+package com.estafet.openshift.dm.config;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

@@ -1,11 +1,11 @@
-package com.estafet.openshift.rest;
+package com.estafet.openshift.dm.rest;
 
-import com.estafet.openshift.model.entity.DeviceOwnership;
-import com.estafet.openshift.model.exception.DMException;
-import com.estafet.openshift.model.exception.EmptyArgumentException;
-import com.estafet.openshift.model.exception.ResourceNotFoundException;
-import com.estafet.openshift.util.PersistenceProvider;
-import com.estafet.openshift.util.Utils;
+import com.estafet.openshift.dm.model.exception.DMException;
+import com.estafet.openshift.dm.util.PersistenceProvider;
+import com.estafet.openshift.dm.model.entity.DeviceOwnership;
+import com.estafet.openshift.dm.model.exception.EmptyArgumentException;
+import com.estafet.openshift.dm.model.exception.ResourceNotFoundException;
+import com.estafet.openshift.dm.util.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Before;
@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.estafet.openshift.config.Constants.*;
-import static com.estafet.openshift.config.TestConstants.*;
+import static com.estafet.openshift.dm.config.Constants.*;
+import static com.estafet.openshift.dm.config.TestConstants.*;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
