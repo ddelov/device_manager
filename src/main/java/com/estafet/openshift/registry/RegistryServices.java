@@ -48,6 +48,7 @@ public class RegistryServices{
 //		}
 
 		private void registerDevice(String deviceId) {
+				log.debug(">> RegistryServices.registerDevice("+deviceId+ ")");
 				deviceTopics.putIfAbsent(deviceId, new LinkedList<String>());
 		}
 		//================ for simulator interaction ====================
@@ -64,6 +65,7 @@ public class RegistryServices{
 		private List<Integer> sendStatePrv(String deviceId, String jsonState){
 				registerDevice(deviceId);//harmless method
 				final List<String> topicListeners = deviceTopics.get(deviceId);
+				log.debug("found "+ topicListeners.size() + " listeners");
 				List<Integer> res = new LinkedList<>();
 				for (String endpoint : topicListeners) {
 						log.debug("Sending notification to "+ endpoint);
