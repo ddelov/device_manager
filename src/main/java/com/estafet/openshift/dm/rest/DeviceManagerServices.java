@@ -1,10 +1,12 @@
 package com.estafet.openshift.dm.rest;
 
+import com.estafet.openshift.dm.config.Constants;
 import com.estafet.openshift.dm.model.exception.DMException;
 import com.estafet.openshift.dm.model.entity.DeviceOwnership;
 import com.estafet.openshift.dm.model.exception.EmptyArgumentException;
 import com.estafet.openshift.dm.model.exception.ResourceNotFoundException;
 import com.estafet.openshift.dm.util.PersistenceProvider;
+import com.estafet.openshift.dm.util.Utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.log4j.Logger;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -118,12 +121,19 @@ public class DeviceManagerServices {
 						log.error(e.getMessage(), e);
 						return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity("Could not open DB connection").build();
 				}
+				try {
+						Utils.sendDeleteRequest(Constants.DELETE_URL, thingName);
+				} catch (IOException e) {
+						log.error(e.getMessage(), e);
+						return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity("Could not update IoT registry").build();
+				}
 				log.debug("<< DeviceManagerServices.deleteDevice()");
 				// return HTTP response 200 in case of success
 				return Response.status(HttpServletResponse.SC_OK).entity("Device deleted").build();
 		}
 
-		PersistenceProvider getPersistenceProvider() {
+		//for test/mock purposes only
+		protected PersistenceProvider getPersistenceProvider() {
 				return new PersistenceProvider();
 		}
 
@@ -259,6 +269,12 @@ public class DeviceManagerServices {
 						} catch (SQLException e) {
 								log.error(e.getMessage(), e);
 								return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity("Could not open DB connection").build();
+						}
+						try {
+								Utils.sendPutRequest(Constants.PUT_URL, thingName);
+						} catch (IOException e) {
+								log.error(e.getMessage(), e);
+								return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity("Could not update IoT registry").build();
 						}
 				} catch (DMException e) {
 						log.error(e.getMessage(), e);

@@ -35,4 +35,6 @@ public interface Constants {
 		String ROLE_MANAGER = "manager";
 		int INVALID_ID = -1;
 
+		String PUT_URL = System.getenv("PUT_URL");//"http://iot-reg-iot-registry.192.168.42.182.nip.io/register";
+		String DELETE_URL = System.getenv("DELETE_URL");//"http://iot-reg-iot-registry.192.168.42.182.nip.io/delete";
 }

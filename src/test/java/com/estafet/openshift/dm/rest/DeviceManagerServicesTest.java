@@ -330,7 +330,6 @@ public class DeviceManagerServicesTest {
 				assertTrue(entity.contains("Device registered"));
 		}
 
-
 		private Map<String, Object> prepareDeviceMap() {
 				final Map<String, Object> res = new HashMap<>(6);
 				res.put(COL_CUST_ID, TEST_MAIL);
@@ -341,7 +340,6 @@ public class DeviceManagerServicesTest {
 				res.put(COL_VALID_FROM, TEST_VALID_FROM);
 				return res;
 		}
-
 
 		private DeviceOwnership firstDevOwnership() {
 				return new DeviceOwnership(TEST_ID, TEST_MAIL, TEST_DEVICE_ID, TEST_TYPE, TEST_SN, TEST_OWN, TEST_VALID_FROM, TEST_VALID_TO);

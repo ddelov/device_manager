@@ -1,9 +1,9 @@
 package com.estafet.openshift.dm.util;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
@@ -32,13 +32,25 @@ public class Utils {
 				}
 				return b - a < delta;
 		}
-		public static int makePostJsonRequest(String url, String jsonString) throws IOException {
+		public static int sendPutRequest(String url, String deviceId) throws IOException {
 				CloseableHttpClient httpClient = HttpClients.createDefault();
-				HttpPost httpPost = new HttpPost(url);
-				StringEntity inputMappings = new StringEntity(jsonString, ContentType.APPLICATION_JSON);
-				httpPost.setEntity(inputMappings);
-				httpPost.setHeader("Content-type", "application/json");
-				CloseableHttpResponse response = httpClient.execute(httpPost);
+				HttpPut httpPut = new HttpPut(url+"/"+deviceId);
+				httpPut.setHeader("Content-type", "application/json");
+				httpPut.setHeader("Accept", "application/json");
+				CloseableHttpResponse response = httpClient.execute(httpPut);
+				BufferedReader rd = new BufferedReader(new InputStreamReader(
+								response.getEntity().getContent()));
+				String line = rd.readLine();
+				System.out.println(line);
+				return response.getStatusLine().getStatusCode();
+		}
+
+		public static int sendDeleteRequest(String url, String deviceId) throws IOException {
+				CloseableHttpClient httpClient = HttpClients.createDefault();
+				HttpDelete httpDelete = new HttpDelete(url+"/"+deviceId);
+				httpDelete.setHeader("Content-type", "application/json");
+				httpDelete.setHeader("Accept", "application/json");
+				HttpResponse response = httpClient.execute(httpDelete);
 				BufferedReader rd = new BufferedReader(new InputStreamReader(
 								response.getEntity().getContent()));
 				String line = rd.readLine();
