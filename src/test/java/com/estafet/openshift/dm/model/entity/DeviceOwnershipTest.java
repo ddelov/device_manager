@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
@@ -21,13 +20,13 @@ public class DeviceOwnershipTest {
 		@Test
 		public void asMap() throws Exception {
 				final Map<String, Object> map = deviceOwnership.asMap();
-				assertThat((String) map.get(Constants.COL_CUST_ID), CoreMatchers.is(TestConstants.TEST_MAIL));
-				assertThat((String) map.get(Constants.COL_THING_NAME), CoreMatchers.is(TestConstants.TEST_DEVICE_ID));
-				assertThat((String) map.get(Constants.COL_THING_TYPE), CoreMatchers.is(TestConstants.TEST_TYPE));
+				assertThat((String) map.get(Constants.CUSTOMER_ID), CoreMatchers.is(TestConstants.TEST_MAIL));
+				assertThat((String) map.get(Constants.THING_NAME), CoreMatchers.is(TestConstants.TEST_DEVICE_ID));
+				assertThat((String) map.get(Constants.THING_TYPE), CoreMatchers.is(TestConstants.TEST_TYPE));
 				assertThat((String) map.get(Constants.COL_SN), CoreMatchers.is(TestConstants.TEST_SN));
 				assertThat((boolean) map.get(Constants.COL_OWN), CoreMatchers.is(TestConstants.TEST_OWN));
-				assertThat((String) map.get(Constants.COL_VALID_FROM), CoreMatchers.is(TestConstants.TEST_VALID_FROM));
-				assertThat((String) map.get(Constants.COL_VALID_TO), CoreMatchers.is(TestConstants.TEST_VALID_TO));
+				assertThat((String) map.get(Constants.VALID_FROM), CoreMatchers.is(TestConstants.TEST_VALID_FROM));
+				assertThat((String) map.get(Constants.VALID_TO), CoreMatchers.is(TestConstants.TEST_VALID_TO));
 		}
 
 }

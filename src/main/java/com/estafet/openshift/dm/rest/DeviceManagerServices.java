@@ -275,7 +275,7 @@ public class DeviceManagerServices {
 								log.debug("Found info for " + deviceOwnership);
 								final Map<String, Object> propertiesMap = deviceOwnership.asMap();
 								//TODO get real device status from registry
-								propertiesMap.put("deviceStatus", "OF");
+								propertiesMap.put(DEVICE_STATUS, DEVICE_STATUS_DEFAULT);
 								devices.add(propertiesMap);
 						}
 				} catch (SQLException e) {

@@ -107,13 +107,14 @@ public class DeviceOwnership {
 		public Map<String, Object> asMap() {
 				Map<String, Object> res = new HashMap<>(8);
 				res.put(COL_ID, getId());
-				res.put(COL_CUST_ID, getCustomerId());
-				res.put(COL_THING_NAME, getThingName());
-				res.put(COL_THING_TYPE, getThingTypeName());
+				res.put(CUSTOMER_ID, getCustomerId());
+				res.put(THING_NAME, getThingName());
+				res.put(THING_TYPE, getThingTypeName());
 				res.put(COL_SN, getSn());
 				res.put(COL_OWN, isOwn());
-				res.put(COL_VALID_FROM, getValidFrom());
-				res.put(COL_VALID_TO, getValidTo());
+				res.put(VALID_FROM, getValidFrom());
+				res.put(VALID_TO, getValidTo());
+				res.put(DEVICE_STATUS, DEVICE_STATUS_DEFAULT);
 				return res;
 		}
 

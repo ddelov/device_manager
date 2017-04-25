@@ -127,25 +127,25 @@ public class DeviceManagerServicesTest {
 				{
 						final Map<String, Object> firstDevProps = allDevices.get(0);
 						assertThat((int) firstDevProps.get(COL_ID), is(TEST_ID));
-						assertThat((String) firstDevProps.get(COL_CUST_ID), is(TEST_MAIL));
-						assertThat((String) firstDevProps.get(COL_THING_NAME), is(TEST_DEVICE_ID));
-						assertThat((String) firstDevProps.get(COL_THING_TYPE), is(TEST_TYPE));
+						assertThat((String) firstDevProps.get(CUSTOMER_ID), is(TEST_MAIL));
+						assertThat((String) firstDevProps.get(THING_NAME), is(TEST_DEVICE_ID));
+						assertThat((String) firstDevProps.get(THING_TYPE), is(TEST_TYPE));
 						assertThat((boolean) firstDevProps.get(COL_OWN), is(TEST_OWN));
 						assertThat((String) firstDevProps.get(COL_SN), is(TEST_SN));
-						assertThat((String) firstDevProps.get(COL_VALID_FROM), is(TEST_VALID_FROM));
-						assertThat((String) firstDevProps.get(COL_VALID_TO), is(TEST_VALID_TO));
-						assertThat((String) firstDevProps.get("deviceStatus"), is("OF"));
+						assertThat((String) firstDevProps.get(VALID_FROM), is(TEST_VALID_FROM));
+						assertThat((String) firstDevProps.get(VALID_TO), is(TEST_VALID_TO));
+						assertThat((String) firstDevProps.get(DEVICE_STATUS), is(DEVICE_STATUS_DEFAULT));
 				}
 				{
 						final Map<String, Object> secondDevProps = allDevices.get(1);
 						assertThat((int) secondDevProps.get(COL_ID), is(TEST_ID + 25));
-						assertThat((String) secondDevProps.get(COL_CUST_ID), is(TEST_MAIL + 2));
-						assertThat((String) secondDevProps.get(COL_THING_NAME), is(TEST_DEVICE_ID + 2));
-						assertThat((String) secondDevProps.get(COL_THING_TYPE), is(TEST_TYPE + 2));
+						assertThat((String) secondDevProps.get(CUSTOMER_ID), is(TEST_MAIL + 2));
+						assertThat((String) secondDevProps.get(THING_NAME), is(TEST_DEVICE_ID + 2));
+						assertThat((String) secondDevProps.get(THING_TYPE), is(TEST_TYPE + 2));
 						assertThat((boolean) secondDevProps.get(COL_OWN), is(!TEST_OWN));
 						assertThat((String) secondDevProps.get(COL_SN), is(TEST_SN + 2));
-						assertThat((String) secondDevProps.get(COL_VALID_FROM), is(VALID_2));
-						assertNull(secondDevProps.get(COL_VALID_TO));
+						assertThat((String) secondDevProps.get(VALID_FROM), is(VALID_2));
+						assertNull(secondDevProps.get(VALID_TO));
 				}
 		}
 
@@ -179,14 +179,14 @@ public class DeviceManagerServicesTest {
 				{
 						final Map<String, Object> firstDevProps = allDevices.get(0);
 						assertThat((int) firstDevProps.get(COL_ID), is(TEST_ID));
-						assertThat((String) firstDevProps.get(COL_CUST_ID), is(TEST_MAIL));
-						assertThat((String) firstDevProps.get(COL_THING_NAME), is(TEST_DEVICE_ID));
-						assertThat((String) firstDevProps.get(COL_THING_TYPE), is(TEST_TYPE));
+						assertThat((String) firstDevProps.get(CUSTOMER_ID), is(TEST_MAIL));
+						assertThat((String) firstDevProps.get(THING_NAME), is(TEST_DEVICE_ID));
+						assertThat((String) firstDevProps.get(THING_TYPE), is(TEST_TYPE));
 						assertThat((boolean) firstDevProps.get(COL_OWN), is(TEST_OWN));
 						assertThat((String) firstDevProps.get(COL_SN), is(TEST_SN));
-						assertThat((String) firstDevProps.get(COL_VALID_FROM), is(TEST_VALID_FROM));
-						assertThat((String) firstDevProps.get(COL_VALID_TO), is(TEST_VALID_TO));
-						assertThat((String) firstDevProps.get("deviceStatus"), is("OF"));
+						assertThat((String) firstDevProps.get(VALID_FROM), is(TEST_VALID_FROM));
+						assertThat((String) firstDevProps.get(VALID_TO), is(TEST_VALID_TO));
+						assertThat((String) firstDevProps.get(DEVICE_STATUS), is(DEVICE_STATUS_DEFAULT));
 				}
 		}
 

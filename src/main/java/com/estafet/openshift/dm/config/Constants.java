@@ -37,6 +37,10 @@ public interface Constants {
 		String THING_NAME = "thingName";
 		String THING_TYPE = "thingType";
 		String VALID_FROM = "validFrom";
+		String VALID_TO = "validTo";
+		String CUSTOMER_ID = "customerId";
+		String DEVICE_STATUS = "deviceStatus";
+		String DEVICE_STATUS_DEFAULT = "ON";
 
 		String PUT_URL = System.getenv("PUT_URL");//"http://iot-reg-iot-registry.192.168.42.182.nip.io/register";
 		String DELETE_URL = System.getenv("DELETE_URL");//"http://iot-reg-iot-registry.192.168.42.182.nip.io/delete";
