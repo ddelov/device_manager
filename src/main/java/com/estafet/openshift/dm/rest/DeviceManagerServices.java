@@ -204,7 +204,7 @@ public class DeviceManagerServices {
 		@Path("/registerDevice")
 		@Consumes(MediaType.APPLICATION_JSON)
 		@Produces(MediaType.APPLICATION_JSON)
-		public Response registerDevice(String jsonPayload) {
+		public Response registerDevice(String jsonPayload, @HeaderParam(HDR_CUSTOMER_ID) String customerId) {
 				log.debug(">> DeviceManagerServices.registerDevice()");
 				Gson gson = new GsonBuilder().create();
 				try {
@@ -214,7 +214,6 @@ public class DeviceManagerServices {
 								throw new EmptyArgumentException("Missing request body");
 						}
 						log.info("body: " + body);
-						final String customerId = (String) body.get(COL_CUST_ID);
 						if (isEmpty(customerId)) {
 								log.error(COL_CUST_ID + " parameter is mandatory");
 								throw new EmptyArgumentException(COL_CUST_ID + " parameter is mandatory");
