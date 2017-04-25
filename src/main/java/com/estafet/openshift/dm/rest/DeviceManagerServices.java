@@ -53,7 +53,7 @@ public class DeviceManagerServices {
 		@Produces(APPLICATION_JSON)
 		public Response getAllDevices(@HeaderParam(HDR_CUSTOMER_ID) String customerId,
 																	@HeaderParam(ROLE) String role) {
-				log.debug(">> DeviceManagerServices.getAllDevices()");
+				log.debug(">> DeviceManagerServices.getAllDevices("+customerId+", "+role+")");
 				//check parameters
 				try {
 						if (isEmpty(role)) {
