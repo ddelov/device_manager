@@ -301,10 +301,13 @@ public class DeviceManagerServices {
 				try (Connection conn = dao.getCon()) {
 						PreparedStatement ps = conn.prepareStatement(SQL_GET_ALL_DEV_OWNERSHIP);
 						ps.setString(1, now);
+						log.debug("param1 (String):"+now);
 						ps.setString(2, now);
+						log.debug("param2 (String):"+now);
 						if (!isEmpty(customerId)) {
 								ps = conn.prepareStatement(SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER);
 								ps.setString(3, customerId);
+								log.debug("param3 (String):"+customerId);
 								sql = SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER;
 						}
 
