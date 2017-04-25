@@ -87,15 +87,23 @@ public class DeviceManagerServices {
 
 
 		@DELETE
-		@Path("/deleteDevice/{thing_name}")
+		@Path("/deleteDevice")
 		@Produces(MediaType.APPLICATION_JSON)
-		public Response deleteDevice(@PathParam(HDR_THING_NAME) String thingName) {
+		public Response deleteDevice(String jsonPayload) {
 				log.debug(">> DeviceManagerServices.deleteDevice()");
+				Gson gson = new GsonBuilder().create();
+				final Map<String, Object> body = gson.fromJson(jsonPayload, Map.class);
+				if (body == null || body.isEmpty()) {
+						log.error("Missing request body");
+						return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity("Missing request body").build();
+				}
+				log.info("body: " + body);
+				final String thingName = (String) body.get(THING_NAME);
 				//check parameters
 				try {
 						if (isEmpty(thingName)) {
-								log.error(HDR_THING_NAME + " parameter is mandatory");
-								throw new EmptyArgumentException(HDR_THING_NAME + " parameter is mandatory");
+								log.error(THING_NAME + " parameter is mandatory");
+								throw new EmptyArgumentException(THING_NAME + " parameter is mandatory");
 						}
 				} catch (EmptyArgumentException e) {
 						log.error(e.getMessage(), e);
@@ -137,69 +145,6 @@ public class DeviceManagerServices {
 				return new PersistenceProvider();
 		}
 
-
-//		@POST
-//		@Path("/registerDevice")
-//		@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-//		@Produces(MediaType.APPLICATION_JSON)
-//		public Response registerDevice(MultivaluedMap<String, String> body) {
-//				log.debug(">> DeviceManagerServices.registerDevice()");
-//				//1. extract input parameters
-//				try {
-//						//1. extract input parameters
-//						if (body == null || body.isEmpty()) {
-//								throw new EmptyArgumentException("Missing request body");
-//						}
-//						log.info("body: "+body);
-//						if (!body.containsKey(COL_CUST_ID)) {
-//								log.error(COL_CUST_ID + " parameter is mandatory");
-//								throw new EmptyArgumentException(COL_CUST_ID + " parameter is mandatory");
-//						}
-//						final String customerId = body.getFirst(COL_CUST_ID);
-//						if (isEmpty(customerId)) {
-//								log.error(COL_THING_NAME + " parameter is mandatory");
-//								throw new EmptyArgumentException(COL_THING_NAME + " parameter is mandatory");
-//						}
-//
-//						final String thingName = body.getFirst(COL_THING_NAME);
-//						if (isEmpty(thingName)) {
-//								log.error(COL_THING_NAME + " parameter is mandatory");
-//								throw new EmptyArgumentException(COL_THING_NAME + " parameter is mandatory");
-//						}
-//						final String thingType = body.getFirst(COL_THING_TYPE);
-//						if (isEmpty(thingType)) {
-//								log.error(COL_THING_TYPE + " parameter is mandatory");
-//								throw new EmptyArgumentException(COL_THING_TYPE + " parameter is mandatory");
-//						}
-//						final String sn = body.getFirst(COL_SN);
-//						if (isEmpty(sn)) {
-//								log.error(COL_SN + " parameter is mandatory");
-//								throw new EmptyArgumentException(COL_SN + " parameter is mandatory");
-//						}
-//						if (!body.containsKey(COL_OWN)) {
-//								log.error(COL_OWN + " parameter is mandatory");
-//								throw new EmptyArgumentException(COL_OWN + " parameter is mandatory");
-//						}
-//						final boolean own = Boolean.getBoolean(body.getFirst(COL_OWN));
-//						final String validFrom = body.getFirst(COL_VALID_FROM);
-//						if (isEmpty(validFrom)) {
-//								log.error(COL_VALID_FROM + " parameter is mandatory");
-//								throw new EmptyArgumentException(COL_VALID_FROM + " parameter is mandatory");
-//						}
-//						//2.processing
-//						final DeviceOwnership deviceOwnership = new DeviceOwnership(customerId, thingName, thingType, sn, own);
-//						deviceOwnership.setValidFrom(validFrom);
-//						registerDevice(deviceOwnership);
-//				} catch (DMException e) {
-//						log.error(e.getMessage(), e);
-//						return Response.status(HttpServletResponse.SC_BAD_REQUEST).build();
-//				}
-//
-//				log.debug("<< DeviceManagerServices.registerDevice()");
-//				// return HTTP response 200 in case of success
-//				return Response.status(HttpServletResponse.SC_OK).entity("Device registered").build();
-//		}
-
 		@POST
 		@Path("/registerDevice")
 		@Consumes(MediaType.APPLICATION_JSON)
@@ -218,16 +163,16 @@ public class DeviceManagerServices {
 								log.error(COL_CUST_ID + " parameter is mandatory");
 								throw new EmptyArgumentException(COL_CUST_ID + " parameter is mandatory");
 						}
-						final String thingName = (String) body.get(COL_THING_NAME);
+						final String thingName = (String) body.get(THING_NAME);
 						if (isEmpty(thingName)) {
-								log.error(COL_THING_NAME + " parameter is mandatory");
-								throw new EmptyArgumentException(COL_THING_NAME + " parameter is mandatory");
+								log.error(THING_NAME + " parameter is mandatory");
+								throw new EmptyArgumentException(THING_NAME + " parameter is mandatory");
 						}
-						final String thingType = (String) body.get(COL_THING_TYPE);
+						final String thingType = (String) body.get(THING_TYPE);
 						// NOTE: thing type is not checked - any non-empty value is accepted
 						if (isEmpty(thingType)) {
-								log.error(COL_THING_TYPE + " parameter is mandatory");
-								throw new EmptyArgumentException(COL_THING_TYPE + " parameter is mandatory");
+								log.error(THING_TYPE + " parameter is mandatory");
+								throw new EmptyArgumentException(THING_TYPE + " parameter is mandatory");
 						}
 						final String sn = (String) body.get(COL_SN);
 						if (isEmpty(sn)) {
@@ -239,10 +184,10 @@ public class DeviceManagerServices {
 								throw new EmptyArgumentException(COL_OWN + " parameter is mandatory");
 						}
 						final boolean own = (boolean) body.get(COL_OWN);
-						final String validFrom = (String) body.get(COL_VALID_FROM);
+						final String validFrom = (String) body.get(VALID_FROM);
 						if (isEmpty(validFrom)) {
-								log.error(COL_VALID_FROM + " parameter is mandatory");
-								throw new EmptyArgumentException(COL_VALID_FROM + " parameter is mandatory");
+								log.error(VALID_FROM + " parameter is mandatory");
+								throw new EmptyArgumentException(VALID_FROM + " parameter is mandatory");
 						}
 						//2.processing
 						final PersistenceProvider dao = getPersistenceProvider();

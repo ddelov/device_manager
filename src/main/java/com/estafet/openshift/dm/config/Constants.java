@@ -30,10 +30,13 @@ public interface Constants {
 
 		// HTTP & parameters
 		String HDR_CUSTOMER_ID = "customer_id";
-		String HDR_THING_NAME = "thing_name";
 		String ROLE = "role";
 		String ROLE_MANAGER = "manager";
 		int INVALID_ID = -1;
+
+		String THING_NAME = "thingName";
+		String THING_TYPE = "thingType";
+		String VALID_FROM = "validFrom";
 
 		String PUT_URL = System.getenv("PUT_URL");//"http://iot-reg-iot-registry.192.168.42.182.nip.io/register";
 		String DELETE_URL = System.getenv("DELETE_URL");//"http://iot-reg-iot-registry.192.168.42.182.nip.io/delete";

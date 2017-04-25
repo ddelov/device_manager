@@ -192,11 +192,11 @@ public class DeviceManagerServicesTest {
 
 		@Test
 		public void deleteDeviceEmptyThingName() throws Exception {
-				final Response response = handler.deleteDevice(EMPTY_STRING);
+				final Response response = handler.deleteDevice("{\"param1\":123.45}");
 				assertNotNull(response);
 				assertThat(response.getStatus(), is(HttpServletResponse.SC_BAD_REQUEST));
 				final String entity = (String) response.getEntity();
-				assertTrue(entity.contains(HDR_THING_NAME + " parameter is mandatory"));
+				assertTrue(entity.contains(THING_NAME + " parameter is mandatory"));
 		}
 
 		@Test
@@ -204,7 +204,7 @@ public class DeviceManagerServicesTest {
 				// mocks
 				when(providerMock.loadDeviceOwnership(any(String.class), any(Connection.class))).thenThrow(SQLException.class);
 				// call method
-				final Response response = handler.deleteDevice(TEST_DEVICE_ID);
+				final Response response = handler.deleteDevice(preparePayload());
 
 				// asserts
 				assertNotNull(response);
@@ -218,7 +218,7 @@ public class DeviceManagerServicesTest {
 				// mocks
 				when(providerMock.loadDeviceOwnership(any(String.class), any(Connection.class))).thenThrow(ResourceNotFoundException.class);
 				// call method
-				final Response response = handler.deleteDevice(TEST_DEVICE_ID);
+				final Response response = handler.deleteDevice(preparePayload());
 
 				// asserts
 				assertNotNull(response);
@@ -230,7 +230,7 @@ public class DeviceManagerServicesTest {
 				// mocks
 				when(providerMock.loadDeviceOwnership(any(String.class), any(Connection.class))).thenThrow(DMException.class);
 				// call method
-				final Response response = handler.deleteDevice(TEST_DEVICE_ID);
+				final Response response = handler.deleteDevice(preparePayload());
 
 				// asserts
 				assertNotNull(response);
@@ -243,7 +243,7 @@ public class DeviceManagerServicesTest {
 				// mocks
 				when(providerMock.loadDeviceOwnership(any(String.class), any(Connection.class))).thenReturn(firstDevOwnership());
 				// call method
-				final Response response = handler.deleteDevice(TEST_DEVICE_ID);
+				final Response response = handler.deleteDevice(preparePayload());
 
 				// asserts
 				assertNotNull(response);
@@ -288,11 +288,11 @@ public class DeviceManagerServicesTest {
 		@Test
 		public void registerDeviceDBConnectionEx() throws Exception {
 				Gson gson = new GsonBuilder().create();
-				final Map<String, Object> deviceMap = prepareDeviceMap();
+//				final Map<String, Object> deviceMap = prepareDeviceMap();
 				// mocks
 				when(providerMock.getCon()).thenThrow(SQLException.class);
 				// call method
-				final Response response = handler.registerDevice(gson.toJson(deviceMap), TEST_MAIL);
+				final Response response = handler.registerDevice(preparePayload(), TEST_MAIL);
 
 				// asserts
 				assertNotNull(response);
@@ -304,12 +304,12 @@ public class DeviceManagerServicesTest {
 		@Test
 		public void registerDeviceExceptionOnWriteNew() throws Exception {
 				Gson gson = new GsonBuilder().create();
-				final Map<String, Object> deviceMap = prepareDeviceMap();
+//				final Map<String, Object> deviceMap = prepareDeviceMap();
 				// mocks
 				when(providerMock.loadDeviceOwnership(any(String.class), any(Connection.class))).thenReturn(firstDevOwnership());
 				doThrow(EmptyArgumentException.class).when(providerMock).writeDeviceOwnership(any(DeviceOwnership.class), any(Connection.class));
 				// call method
-				final Response response = handler.registerDevice(gson.toJson(deviceMap), TEST_MAIL);
+				final Response response = handler.registerDevice(preparePayload(), TEST_MAIL);
 
 				// asserts
 				assertNotNull(response);
@@ -320,12 +320,12 @@ public class DeviceManagerServicesTest {
 		@Test
 		public void registerDeviceOK() throws Exception {
 				Gson gson = new GsonBuilder().create();
-				final Map<String, Object> deviceMap = prepareDeviceMap();
+//				final Map<String, Object> deviceMap = prepareDeviceMap();
 				// mocks
 				when(providerMock.loadDeviceOwnership(any(String.class), any(Connection.class))).thenReturn(firstDevOwnership());
 				doThrow(ResourceNotFoundException.class).when(providerMock).markDeviceOwnershipInvalid(any(DeviceOwnership.class), any(Connection.class));
 				// call method
-				final Response response = handler.registerDevice(gson.toJson(deviceMap), TEST_MAIL);
+				final Response response = handler.registerDevice(preparePayload(), TEST_MAIL);
 
 				// asserts
 				assertNotNull(response);
@@ -336,12 +336,16 @@ public class DeviceManagerServicesTest {
 
 		private Map<String, Object> prepareDeviceMap() {
 				final Map<String, Object> res = new HashMap<>(6);
-				res.put(COL_THING_NAME, TEST_DEVICE_ID);
-				res.put(COL_THING_TYPE, TEST_TYPE);
+				res.put(THING_NAME, TEST_DEVICE_ID);
+				res.put(THING_TYPE, TEST_TYPE);
 				res.put(COL_SN, TEST_SN);
 				res.put(COL_OWN, TEST_OWN);
-				res.put(COL_VALID_FROM, TEST_VALID_FROM);
+				res.put(VALID_FROM, TEST_VALID_FROM);
 				return res;
+		}
+		private String preparePayload(){
+				Gson gson = new GsonBuilder().create();
+				return gson.toJson(prepareDeviceMap());
 		}
 
 		private DeviceOwnership firstDevOwnership() {
