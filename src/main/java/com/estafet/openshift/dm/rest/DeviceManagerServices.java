@@ -297,7 +297,6 @@ public class DeviceManagerServices {
 				final SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
 				sdf.setTimeZone(today.getTimeZone());
 				final String now = sdf.format(today.getTime());
-
 				try (Connection conn = dao.getCon()) {
 						PreparedStatement ps = conn.prepareStatement(SQL_GET_ALL_DEV_OWNERSHIP);
 						ps.setString(1, now);
@@ -306,11 +305,16 @@ public class DeviceManagerServices {
 						log.debug("param2 (String):"+now);
 						if (!isEmpty(customerId)) {
 								ps = conn.prepareStatement(SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER);
+								ps.setString(1, now);
+								log.debug("param1 (String):"+now);
+								ps.setString(2, now);
+								log.debug("param2 (String):"+now);
 								ps.setString(3, customerId);
 								log.debug("param3 (String):"+customerId);
 								sql = SQL_GET_DEV_OWNERSHIP_BY_CUSTOMER;
 						}
-
+//						sql = sql.replaceAll("_NOW_", now);
+//						sql = sql.replaceAll("_CUSTOMER_ID_", customerId);
 						log.debug(sql);
 						final ResultSet resultSet = ps.executeQuery();
 						while (resultSet.next()) {
