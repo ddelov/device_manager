@@ -35,6 +35,9 @@ public class DeviceOwnership {
 		private final String validFrom; // date in format 'yyyyMMdd'
 		@Column(name = COL_VALID_TO)
 		private String validTo; // date in format 'yyyyMMdd'
+		@Column(name = COL_STATUS, nullable = false)
+		private String status = DEVICE_STATUS_DEFAULT;
+
 
 		/**
 		 * Constructs a new object from scratch - suitable for DB insert operation
@@ -46,20 +49,21 @@ public class DeviceOwnership {
 		 * @param own
 		 * @param validFrom
 		 */
-		public DeviceOwnership(String customerId, String thingName, String thingTypeName, String sn, boolean own, String validFrom) {
+		public DeviceOwnership(String customerId, String thingName, String thingTypeName, String sn, boolean own, String validFrom, String status) {
 				this.customerId = customerId;
 				this.thingName = thingName;
 				this.thingTypeName = thingTypeName;
 				this.sn = sn;
 				this.own = own;
 				this.validFrom = validFrom;
+				this.status = status;
 		}
 
 		/**
 		 * Constructor suitable for DB loaded record
 		 */
-		public DeviceOwnership(int id, String customerId, String thingName, String thingTypeName, String sn, boolean own, String validFrom, String validTo) {
-				this(customerId, thingName, thingTypeName, sn, own, validFrom);
+		public DeviceOwnership(int id, String customerId, String thingName, String thingTypeName, String sn, boolean own, String validFrom, String validTo, String status) {
+				this(customerId, thingName, thingTypeName, sn, own, validFrom, status);
 				this.id = id;
 				this.validTo = validTo;
 		}
@@ -104,6 +108,14 @@ public class DeviceOwnership {
 				return sn;
 		}
 
+		public String getStatus() {
+				return status;
+		}
+
+		public void setStatus(String status) {
+				this.status = status;
+		}
+
 		public Map<String, Object> asMap() {
 				Map<String, Object> res = new HashMap<>(8);
 				res.put(COL_ID, getId());
@@ -114,7 +126,7 @@ public class DeviceOwnership {
 				res.put(COL_OWN, isOwn());
 				res.put(VALID_FROM, getValidFrom());
 				res.put(VALID_TO, getValidTo());
-				res.put(DEVICE_STATUS, DEVICE_STATUS_DEFAULT);
+				res.put(DEVICE_STATUS, getStatus());
 				return res;
 		}
 
@@ -129,6 +141,7 @@ public class DeviceOwnership {
 								", own=" + own +
 								", validFrom='" + validFrom + '\'' +
 								", validTo='" + validTo + '\'' +
+								", status='" + status + '\'' +
 								'}';
 		}
 }

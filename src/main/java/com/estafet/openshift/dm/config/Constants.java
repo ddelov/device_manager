@@ -16,7 +16,7 @@ public interface Constants {
 		String PASSWORD = "debil4o";
 
 		//DB tables
-		String TABLE_NAME_DEVICE_OWNERSHIP = "dev_ownership";//
+		String TABLE_NAME_DEVICE_OWNERSHIP = "dev_ownership";
 
 		//DB columns
 		String COL_ID = "id";
@@ -27,6 +27,7 @@ public interface Constants {
 		String COL_OWN = "own";
 		String COL_THING_TYPE = "thing_type";
 		String COL_SN = "sn";
+		String COL_STATUS = "status";
 
 		// HTTP & parameters
 		String HDR_CUSTOMER_ID = "customer_id";
@@ -41,6 +42,7 @@ public interface Constants {
 		String CUSTOMER_ID = "customerId";
 		String DEVICE_STATUS = "deviceStatus";
 		String DEVICE_STATUS_DEFAULT = "ON";
+		String DESIRED_STATUS = "action";
 
 		String PUT_URL = System.getenv("PUT_URL");//"http://iot-reg-iot-registry.192.168.42.182.nip.io/register";
 		String DELETE_URL = System.getenv("DELETE_URL");//"http://iot-reg-iot-registry.192.168.42.182.nip.io/delete";

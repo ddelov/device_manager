@@ -2,6 +2,8 @@ package com.estafet.openshift.dm.util;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 
@@ -12,6 +14,7 @@ import static org.junit.Assert.assertTrue;
  * Created by Delcho Delov on 13.04.17.
  *
  */
+@RunWith(MockitoJUnitRunner.class)
 public class UtilsTest {
 		@Test
 		public void isEmpty() throws Exception {

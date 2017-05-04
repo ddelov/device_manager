@@ -1,5 +1,6 @@
 package com.estafet.openshift.dm.rest;
 
+import com.estafet.openshift.dm.config.Constants;
 import com.estafet.openshift.dm.model.entity.DeviceOwnership;
 import com.estafet.openshift.dm.model.exception.DMException;
 import com.estafet.openshift.dm.model.exception.EmptyArgumentException;
@@ -117,6 +118,8 @@ public class DeviceManagerServicesTest {
 				when(resultSetMock.getString(7)).thenReturn(TEST_VALID_TO).thenReturn(null);
 				//customerId
 				when(resultSetMock.getString(8)).thenReturn(TEST_MAIL).thenReturn(TEST_MAIL + 2);
+				//status
+				when(resultSetMock.getString(9)).thenReturn(Constants.DEVICE_STATUS_DEFAULT);
 				final Response response = handler.getAllDevices(TEST_MAIL, ROLE_MANAGER);
 				assertNotNull(response);
 				assertThat(response.getStatus(), is(SC_OK));
@@ -169,6 +172,8 @@ public class DeviceManagerServicesTest {
 				when(resultSetMock.getString(7)).thenReturn(TEST_VALID_TO);
 				//customerId
 				when(resultSetMock.getString(8)).thenReturn(TEST_MAIL);
+				//status
+				when(resultSetMock.getString(9)).thenReturn(Constants.DEVICE_STATUS_DEFAULT);
 				final Response response = handler.getAllDevices(TEST_MAIL, TEST_ROLE);
 				assertNotNull(response);
 				assertThat(response.getStatus(), is(SC_OK));
@@ -349,7 +354,7 @@ public class DeviceManagerServicesTest {
 		}
 
 		private DeviceOwnership firstDevOwnership() {
-				return new DeviceOwnership(TEST_ID, TEST_MAIL, TEST_DEVICE_ID, TEST_TYPE, TEST_SN, TEST_OWN, TEST_VALID_FROM, TEST_VALID_TO);
+				return new DeviceOwnership(TEST_ID, TEST_MAIL, TEST_DEVICE_ID, TEST_TYPE, TEST_SN, TEST_OWN, TEST_VALID_FROM, TEST_VALID_TO, Constants.DEVICE_STATUS_DEFAULT);
 		}
 
 }

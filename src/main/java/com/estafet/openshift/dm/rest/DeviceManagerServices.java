@@ -201,7 +201,7 @@ public class DeviceManagerServices {
 										// not a problem - continue
 								}
 								// 2. insert a new record - valid from today
-								DeviceOwnership actualRecord = new DeviceOwnership(customerId, thingName, thingType, sn, own, validFrom);
+								DeviceOwnership actualRecord = new DeviceOwnership(customerId, thingName, thingType, sn, own, validFrom, Constants.DEVICE_STATUS_DEFAULT);
 								try {
 										dao.writeDeviceOwnership(actualRecord, conn);
 										conn.commit();
@@ -228,6 +228,55 @@ public class DeviceManagerServices {
 				log.info("Exit DeviceManager.addNewDevice() method");
 				// return HTTP response 200 in case of success
 				return Response.status(HttpServletResponse.SC_OK).entity("Device registered").build();
+		}
+		@PUT
+		@Path("/setDeviceStatus")
+		@Consumes(MediaType.APPLICATION_JSON)
+		@Produces(MediaType.APPLICATION_JSON)
+		public Response setDeviceStatus(String jsonPayload){
+				log.debug(">> DeviceManagerServices.setDeviceStatus()");
+				Gson gson = new GsonBuilder().create();
+				try {
+						//1. extract input parameters
+						final Map<String, Object> body = gson.fromJson(jsonPayload, Map.class);
+						if (body == null || body.isEmpty()) {
+								throw new EmptyArgumentException("Missing request body");
+						}
+						log.info("body: " + body);
+						final String thingName = (String) body.get(THING_NAME);
+						if (isEmpty(thingName)) {
+								log.error(THING_NAME + " parameter is mandatory");
+								throw new EmptyArgumentException(THING_NAME + " parameter is mandatory");
+						}
+						final String desiredStatus = (String) body.get(DESIRED_STATUS);
+						if (isEmpty(desiredStatus)) {
+								log.error(DESIRED_STATUS + " parameter is mandatory");
+								throw new EmptyArgumentException(DESIRED_STATUS + " parameter is mandatory");
+						}
+						//2.processing
+						final PersistenceProvider dao = getPersistenceProvider();
+						try (Connection conn = dao.getCon()) {
+								// 1. search device current record (if any) in DeviceOwnership and mark as invalid
+								try {
+										final DeviceOwnership loadDeviceOwnership = dao.loadDeviceOwnership(thingName, conn);
+										loadDeviceOwnership.setStatus(desiredStatus);
+										dao.changeDeviceStatus(loadDeviceOwnership, conn);
+								} catch (ResourceNotFoundException e) {
+										log.error(e.getMessage(), e);
+										return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity(e.getMessage()).build();
+								}
+						} catch (SQLException e) {
+								log.error(e.getMessage(), e);
+								return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity("Could not open DB connection").build();
+						}
+				} catch (EmptyArgumentException e) {
+						log.error(e.getMessage(), e);
+						return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity(e.getMessage()).build();
+				}
+
+				log.info("Exit DeviceManager.setDeviceStatus() method");
+				// return HTTP response 200 in case of success
+				return Response.status(HttpServletResponse.SC_OK).entity("Device status changed").build();
 		}
 
 		private List<Map<String, Object>> listMyDevices(String customerId) throws DMException {
@@ -271,11 +320,10 @@ public class DeviceManagerServices {
 								final String validFrom = resultSet.getString(6);
 								final String validTo = resultSet.getString(7);
 								final String customerIdRead = resultSet.getString(8);
-								final DeviceOwnership deviceOwnership = new DeviceOwnership(id, customerIdRead, thingName, thingTypeName, sn, own, validFrom, validTo);
+								final String status = resultSet.getString(9);
+								final DeviceOwnership deviceOwnership = new DeviceOwnership(id, customerIdRead, thingName, thingTypeName, sn, own, validFrom, validTo, status);
 								log.debug("Found info for " + deviceOwnership);
 								final Map<String, Object> propertiesMap = deviceOwnership.asMap();
-								//TODO get real device status from registry
-								propertiesMap.put(DEVICE_STATUS, DEVICE_STATUS_DEFAULT);
 								devices.add(propertiesMap);
 						}
 				} catch (SQLException e) {

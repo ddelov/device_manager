@@ -84,7 +84,8 @@ public class PersistenceProvider {
 						boolean own = resultSet.getBoolean(5);
 						final String validFrom = resultSet.getString(6);
 						final String validTo = resultSet.getString(7);
-						final DeviceOwnership deviceOwnership = new DeviceOwnership(id, customerId, thingName, thingTypeName, sn, own, validFrom, validTo);
+						final String status = resultSet.getString(8);
+						final DeviceOwnership deviceOwnership = new DeviceOwnership(id, customerId, thingName, thingTypeName, sn, own, validFrom, validTo, status);
 						log.debug("Found " + deviceOwnership);
 						return deviceOwnership;
 				} else {
@@ -109,7 +110,8 @@ public class PersistenceProvider {
 				final String typeName = deviceOwnership.getThingTypeName();
 				final String sn = deviceOwnership.getSn();
 				final String validFrom = deviceOwnership.getValidFrom();
-				if (isEmpty(customerId) || isEmpty(thingName) || isEmpty(typeName) || isEmpty(sn) || isEmpty(validFrom)) {
+				final String status = deviceOwnership.getStatus();
+				if (isEmpty(customerId) || isEmpty(thingName) || isEmpty(typeName) || isEmpty(sn) || isEmpty(validFrom) || isEmpty(status)) {
 						throw new EmptyArgumentException("DeviceOwnership instance is not complete");
 				}
 				final boolean own = deviceOwnership.isOwn();
@@ -123,6 +125,7 @@ public class PersistenceProvider {
 				ps.setString(5, validFrom);
 				ps.setString(6, validTo);
 				ps.setString(7, thingName);
+				ps.setString(8, status);
 
 				final int i = ps.executeUpdate();
 				log.debug("Affected rows: " + i);
@@ -149,5 +152,21 @@ public class PersistenceProvider {
 				final int i = ps.executeUpdate();
 				log.debug("Affected rows: " + i);
 				log.debug("<< markDeviceOwnershipInvalid()");
+		}
+
+		public void changeDeviceStatus(DeviceOwnership deviceOwnership, Connection conn) throws SQLException, EmptyArgumentException {
+				log.debug(">> changeDeviceStatus()");
+				if (conn == null || conn.isClosed() ||
+								deviceOwnership == null || deviceOwnership.getId() == INVALID_ID) {
+						throw new EmptyArgumentException("All parameters are mandatory");
+				}
+				final int id = deviceOwnership.getId();
+				PreparedStatement ps = conn.prepareStatement(SQL_CHANGE_DEV_STATUS);
+				ps.setString(1, deviceOwnership.getStatus());
+				ps.setInt(2, id);
+
+				final int i = ps.executeUpdate();
+				log.debug("Affected rows: " + i);
+				log.debug("<< changeDeviceStatus()");
 		}
 }

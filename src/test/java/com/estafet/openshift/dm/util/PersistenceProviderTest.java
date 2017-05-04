@@ -1,5 +1,6 @@
 package com.estafet.openshift.dm.util;
 
+import com.estafet.openshift.dm.config.Constants;
 import com.estafet.openshift.dm.model.entity.DeviceOwnership;
 import com.estafet.openshift.dm.model.exception.EmptyArgumentException;
 import com.estafet.openshift.dm.model.exception.ResourceNotFoundException;
@@ -101,7 +102,7 @@ public class PersistenceProviderTest {
 
 		@Test(expected = EmptyArgumentException.class)
 		public void writeDeviceOwnershipClosedConnection() throws Exception {
-				DeviceOwnership deviceOwnership = new DeviceOwnership(TEST_ID, TEST_MAIL, TEST_DEVICE_ID, TEST_TYPE, TEST_SN, TEST_OWN, TEST_VALID_FROM, TEST_VALID_TO);
+				DeviceOwnership deviceOwnership = new DeviceOwnership(TEST_ID, TEST_MAIL, TEST_DEVICE_ID, TEST_TYPE, TEST_SN, TEST_OWN, TEST_VALID_FROM, TEST_VALID_TO, Constants.DEVICE_STATUS_DEFAULT);
 				//mocks
 				when(preparedStatementMock.getConnection()).thenReturn(connectionMock);
 				when(connectionMock.isClosed()).thenReturn(true);
@@ -112,7 +113,7 @@ public class PersistenceProviderTest {
 
 		@Test(expected = EmptyArgumentException.class)
 		public void writeDeviceOwnershipMissingThingTypeConnection() throws Exception {
-				DeviceOwnership deviceOwnership = new DeviceOwnership(TEST_ID, TEST_MAIL, TEST_DEVICE_ID, null, TEST_SN, TEST_OWN, TEST_VALID_FROM, TEST_VALID_TO);
+				DeviceOwnership deviceOwnership = new DeviceOwnership(TEST_ID, TEST_MAIL, TEST_DEVICE_ID, null, TEST_SN, TEST_OWN, TEST_VALID_FROM, TEST_VALID_TO, Constants.DEVICE_STATUS_DEFAULT);
 				//mocks
 				when(preparedStatementMock.getConnection()).thenReturn(connectionMock);
 				when(connectionMock.isClosed()).thenReturn(false);
@@ -123,7 +124,7 @@ public class PersistenceProviderTest {
 
 		@Test
 		public void writeDeviceOwnership() throws Exception {
-				DeviceOwnership deviceOwnership = new DeviceOwnership(TEST_ID, TEST_MAIL, TEST_DEVICE_ID, TEST_TYPE, TEST_SN, TEST_OWN, TEST_VALID_FROM, TEST_VALID_TO);
+				DeviceOwnership deviceOwnership = new DeviceOwnership(TEST_ID, TEST_MAIL, TEST_DEVICE_ID, TEST_TYPE, TEST_SN, TEST_OWN, TEST_VALID_FROM, TEST_VALID_TO, Constants.DEVICE_STATUS_DEFAULT);
 				//mocks
 				when(preparedStatementMock.getConnection()).thenReturn(connectionMock);
 				when(connectionMock.isClosed()).thenReturn(false);
@@ -137,7 +138,7 @@ public class PersistenceProviderTest {
 		@Test(expected = EmptyArgumentException.class)
 		public void markDeviceOwnershipInvalidClosedConnection() throws Exception {
 				DeviceOwnership deviceOwnership = new DeviceOwnership(TEST_MAIL, TEST_DEVICE_ID, TEST_TYPE,
-								TEST_SN, TEST_OWN, TEST_VALID_FROM);
+								TEST_SN, TEST_OWN, TEST_VALID_FROM, Constants.DEVICE_STATUS_DEFAULT);
 				providerMock.markDeviceOwnershipInvalid(deviceOwnership, connectionMock);
 		}
 
@@ -149,7 +150,7 @@ public class PersistenceProviderTest {
 
 				//method call
 				DeviceOwnership deviceOwnership = new DeviceOwnership(TEST_ID, TEST_MAIL, TEST_DEVICE_ID, TEST_TYPE,
-								TEST_SN, TEST_OWN, TEST_VALID_FROM, null);
+								TEST_SN, TEST_OWN, TEST_VALID_FROM, null, Constants.DEVICE_STATUS_DEFAULT);
 				providerMock.markDeviceOwnershipInvalid(deviceOwnership, connectionMock);
 
 		}

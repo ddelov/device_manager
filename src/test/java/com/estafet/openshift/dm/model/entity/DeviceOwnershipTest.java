@@ -15,7 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class DeviceOwnershipTest {
 
-		private final DeviceOwnership deviceOwnership = new DeviceOwnership(TestConstants.TEST_ID, TestConstants.TEST_MAIL, TestConstants.TEST_DEVICE_ID, TestConstants.TEST_TYPE, TestConstants.TEST_SN, TestConstants.TEST_OWN, TestConstants.TEST_VALID_FROM, TestConstants.TEST_VALID_TO);
+		private final DeviceOwnership deviceOwnership = new DeviceOwnership(TestConstants.TEST_ID, TestConstants.TEST_MAIL, TestConstants.TEST_DEVICE_ID, TestConstants.TEST_TYPE, TestConstants.TEST_SN, TestConstants.TEST_OWN, TestConstants.TEST_VALID_FROM, TestConstants.TEST_VALID_TO, Constants.DEVICE_STATUS_DEFAULT);
 
 		@Test
 		public void asMap() throws Exception {
