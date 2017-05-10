@@ -165,7 +165,7 @@ public class PersistenceProvider {
 				ps.setString(1, deviceOwnership.getStatus());
 				ps.setInt(2, id);
 				log.debug(deviceOwnership);
-
+				log.debug(SQL_CHANGE_DEV_STATUS);
 				final int i = ps.executeUpdate();
 				log.debug("Affected rows: " + i);
 				log.debug("<< changeDeviceStatus()");

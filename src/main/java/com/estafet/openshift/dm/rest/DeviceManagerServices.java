@@ -263,6 +263,7 @@ public class DeviceManagerServices {
 										log.debug("status = " + status);
 										loadDeviceOwnership.setStatus(status);
 										dao.changeDeviceStatus(loadDeviceOwnership, conn);
+										conn.commit();
 								} catch (ResourceNotFoundException e) {
 										log.error(e.getMessage(), e);
 										return Response.status(HttpServletResponse.SC_BAD_REQUEST).entity(e.getMessage()).build();
