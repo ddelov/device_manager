@@ -248,7 +248,7 @@ public class DeviceManagerServices {
 								log.error(THING_NAME + " parameter is mandatory");
 								throw new EmptyArgumentException(THING_NAME + " parameter is mandatory");
 						}
-						final Boolean desiredStatus = (Boolean) body.get(DESIRED_STATUS);
+						final Boolean desiredStatus = Boolean.valueOf(body.get(DESIRED_STATUS).toString());
 						if (desiredStatus==null) {
 								log.error(DESIRED_STATUS + " parameter is mandatory");
 								throw new EmptyArgumentException(DESIRED_STATUS + " parameter is mandatory");
@@ -259,7 +259,9 @@ public class DeviceManagerServices {
 								// 1. search device current record (if any) in DeviceOwnership and mark as invalid
 								try {
 										final DeviceOwnership loadDeviceOwnership = dao.loadDeviceOwnership(thingName, conn);
-										loadDeviceOwnership.setStatus(desiredStatus?"ON":"OFF");
+										final String status = desiredStatus ? "ON" : "OFF";
+										log.debug("status = " + status);
+										loadDeviceOwnership.setStatus(status);
 										dao.changeDeviceStatus(loadDeviceOwnership, conn);
 								} catch (ResourceNotFoundException e) {
 										log.error(e.getMessage(), e);
