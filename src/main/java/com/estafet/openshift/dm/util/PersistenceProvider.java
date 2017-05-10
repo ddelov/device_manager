@@ -163,6 +163,7 @@ public class PersistenceProvider {
 				final int id = deviceOwnership.getId();
 				PreparedStatement ps = conn.prepareStatement(SQL_CHANGE_DEV_STATUS);
 				ps.setString(1, deviceOwnership.getStatus());
+				log.debug(deviceOwnership);
 				ps.setInt(2, id);
 
 				final int i = ps.executeUpdate();
